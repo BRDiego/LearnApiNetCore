@@ -1,4 +1,4 @@
-namespace APINetCore;
+namespace APINetCore.src;
 
 public class WeatherForecast
 {

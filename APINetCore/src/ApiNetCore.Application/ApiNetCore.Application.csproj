@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApiNetCore.Business\ApiNetCore.Business.csproj" />
+    <ProjectReference Include="..\ApiNetCore.Data\ApiNetCore.Data.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -7,53 +7,56 @@ namespace ApiNetCore.Data.EFContext.Repository
 {
     public class EntityRepository<TEntity> : IEntityRepository<TEntity> where TEntity : Entity, new()
     {
-        protected readonly ApplicationDbContext _dbContext;
-        protected readonly DbSet<TEntity> _dbSet;
+        protected readonly ApplicationDbContext DbContext;
+        protected readonly DbSet<TEntity> DbSet;
         
         public EntityRepository(ApplicationDbContext context)
         {
-            _dbContext = context;
-            _dbSet = _dbContext.Set<TEntity>();
+            DbContext = context;
+            DbSet = DbContext.Set<TEntity>();
         }
 
-        public Task Add(TEntity entity)
+        public async Task<int> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            return await DbContext.SaveChangesAsync();
         }
 
-        public Task Delete(int id)
+        public async Task AddAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            DbSet.Add(entity);
+            await SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await DbSet.AsNoTracking().Where(predicate).ToListAsync();
+        }
+
+        public async Task UpdateAsync(TEntity entity)
+        {
+            DbSet.Update(entity);
+            await SaveChangesAsync();
+        }
+        
+        public async Task DeleteAsync(ushort id)
+        {
+            DbSet.Remove(new TEntity { Id = id });
+            await SaveChangesAsync();
+        }
+
+        public async Task<TEntity> GetByIdAsync(ushort id)
+        {
+            return await DbSet.FirstAsync(x => x.Id == id);
+        }
+
+        public async Task<List<TEntity>> ListAllAsync()
+        {
+            return await DbSet.ToListAsync();
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TEntity>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TEntity> GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> SaveChanges()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Update(TEntity entity)
-        {
-            throw new NotImplementedException();
+            DbContext?.Dispose();
         }
     }
 }

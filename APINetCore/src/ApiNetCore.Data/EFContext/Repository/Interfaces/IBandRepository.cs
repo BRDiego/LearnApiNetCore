@@ -3,8 +3,8 @@ using ApiNetCore.Business.Models;
 
 namespace ApiNetCore.Data.EFContext.Repository.Interfaces
 {
-    public interface IBandRepository<TEntity> : IEntityRepository<Band>
+    public interface IBandRepository : IEntityRepository<Band>
     {
-        public List<Band> GetBandsByMusician(int musicianId);
+        public Task<IEnumerable<Band>> GetBandsByMusician(ushort musicianId);
     }
 }

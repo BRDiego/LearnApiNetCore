@@ -4,7 +4,7 @@ namespace ApiNetCore.Business.Models
     {
         public string Name { get; set; } = "";
         public string MusicalStyles { get; set; } = "";
-        public string Image { get; set; } = "";
+        public string ImageFileName { get; set; } = "";
         public List<Musician> Musicians { get; set; } = new List<Musician>();
     }
 }

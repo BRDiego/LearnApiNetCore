@@ -8,9 +8,9 @@ namespace ApiNetCore.Data.EFContext.Repository
     {
         public MusicianRepository(ApplicationDbContext context) : base(context)  { }
 
-        public async Task<IEnumerable<Musician>> GetMusiciansByBand(ushort bandId)
+        public async Task<IEnumerable<Musician>> ListMusiciansByBand(ushort bandId)
         {
-            return await DbContext.Musicians.AsNoTracking()
+            return await dbContext.Musicians.AsNoTracking()
                                         .Include(m => m.Bands)
                                         .Where(m => m.Bands.Where(b => b.Id == bandId).ToList().Count > 0)
                                         .ToListAsync();

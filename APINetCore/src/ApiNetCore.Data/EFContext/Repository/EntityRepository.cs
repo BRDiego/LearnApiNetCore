@@ -7,56 +7,61 @@ namespace ApiNetCore.Data.EFContext.Repository
 {
     public class EntityRepository<TEntity> : IEntityRepository<TEntity> where TEntity : Entity, new()
     {
-        protected readonly ApplicationDbContext DbContext;
-        protected readonly DbSet<TEntity> DbSet;
+        protected readonly ApplicationDbContext dbContext;
+        protected readonly DbSet<TEntity> dbSet;
         
         public EntityRepository(ApplicationDbContext context)
         {
-            DbContext = context;
-            DbSet = DbContext.Set<TEntity>();
+            dbContext = context;
+            dbSet = dbContext.Set<TEntity>();
         }
 
         public async Task<int> SaveChangesAsync()
         {
-            return await DbContext.SaveChangesAsync();
+            return await dbContext.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            dbContext?.Dispose();
         }
 
         public async Task AddAsync(TEntity entity)
         {
-            DbSet.Add(entity);
+            dbSet.Add(entity);
             await SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return await DbSet.AsNoTracking().Where(predicate).ToListAsync();
         }
 
         public async Task UpdateAsync(TEntity entity)
         {
-            DbSet.Update(entity);
+            dbSet.Update(entity);
             await SaveChangesAsync();
         }
         
         public async Task DeleteAsync(ushort id)
         {
-            DbSet.Remove(new TEntity { Id = id });
+            dbSet.Remove(new TEntity { Id = id });
             await SaveChangesAsync();
         }
 
-        public async Task<TEntity> GetByIdAsync(ushort id)
+        public async Task<TEntity> FindAsync(ushort id)
         {
-            return await DbSet.FirstAsync(x => x.Id == id);
+            return await dbSet.FirstAsync(x => x.Id == id);
         }
 
-        public async Task<List<TEntity>> ListAllAsync()
+        public async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await DbSet.ToListAsync();
+            return await dbSet.AsNoTracking().FirstAsync(predicate);
         }
 
-        public void Dispose()
+        public async Task<IEnumerable<TEntity>> ListAsync()
         {
-            DbContext?.Dispose();
+            return await dbSet.ToListAsync();
+        }
+
+        public async Task<IEnumerable<TEntity>> ListAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await dbSet.Where(predicate).ToListAsync();
         }
     }
 }

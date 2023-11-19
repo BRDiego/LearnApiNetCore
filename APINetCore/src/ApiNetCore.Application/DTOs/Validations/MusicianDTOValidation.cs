@@ -1,9 +1,7 @@
-using ApiNetCore.Application.DTOs;
 using FluentValidation;
 
-namespace ApiNetCore.Business.Models.Validations
+namespace ApiNetCore.Application.DTOs.Validations
 {
-    
     public class MusicianDTOValidation : AbstractValidator<MusicianDTO>
     {
         public MusicianDTOValidation()

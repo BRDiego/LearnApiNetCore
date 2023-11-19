@@ -15,5 +15,13 @@ namespace ApiNetCore.Data.EFContext.Repository
                                         .Where(m => m.Bands.Where(b => b.Id == bandId).ToList().Count > 0)
                                         .ToListAsync();
         }
+
+        public async Task<Musician> GetMusicianBands(ushort id)
+        {
+            return await dbContext.Musicians.AsNoTracking()
+                                        .Include(m => m.Bands)
+                                        .Where(m => m.Id == id)
+                                        .FirstAsync();
+        }
     }
 }

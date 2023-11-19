@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using ApiNetCore.Application.DTOs;
 using ApiNetCore.Business.Models;
 
-namespace ApiNetCore.Business.Services.Interfaces
+namespace ApiNetCore.Application.Services.Interfaces
 {
     public interface IEntityService<DtoType, EntityType> : IDisposable where DtoType : EntityDTO where EntityType : Entity
     {

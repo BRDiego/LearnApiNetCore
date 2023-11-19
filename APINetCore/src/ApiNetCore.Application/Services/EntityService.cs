@@ -1,15 +1,14 @@
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using ApiNetCore.Application.DTOs;
+using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
 using ApiNetCore.Business.Models;
-using ApiNetCore.Business.Services.Interfaces;
 using ApiNetCore.Data.EFContext.Repository.Interfaces;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace ApiNetCore.Business.Services
+namespace ApiNetCore.Application.Services
 {
     public abstract class EntityService<MapSourceDtoType, MapDestinationEntityType> : BaseService, IEntityService<MapSourceDtoType, MapDestinationEntityType> where MapDestinationEntityType : Entity where MapSourceDtoType : EntityDTO
     {

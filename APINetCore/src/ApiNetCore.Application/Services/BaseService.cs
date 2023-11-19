@@ -1,6 +1,6 @@
 using ApiNetCore.Business.AlertsManagement;
 
-namespace ApiNetCore.Business.Services
+namespace ApiNetCore.Application.Services
 {
     public abstract class BaseService
     {

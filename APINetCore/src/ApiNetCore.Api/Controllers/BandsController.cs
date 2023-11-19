@@ -1,10 +1,9 @@
-using System;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ApiNetCore.Application.DTOs;
 using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
-using ApiNetCore.Data.EFContext.Repository;
+using ApiNetCore.Api.CustomExceptions;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace ApiNetCore.Api.Controllers
 {
@@ -12,20 +11,15 @@ namespace ApiNetCore.Api.Controllers
     public class BandsController : MainController
     {
         private readonly IBandService bandService;
-        private readonly IMapper mapper;
 
         public BandsController(IBandService bandService,
-                                      IMapper mapper,
                                       IAlertManager alertManager)
                                       : base(alertManager)
         {
-
-            this.mapper = mapper;
             this.bandService = bandService;
         }
 
         [HttpGet]
-
         public async Task<ActionResult<IEnumerable<BandDTO>>> List()
         {
             try
@@ -39,9 +33,55 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        //TODO
-        //Implement some filters like: Find Bands by MusicalStyle ot use the predicate List
-        // [HttpGet]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<BandDTO>>> List([FromForm] ushort musicianAge)
+        {
+            try
+            {
+                if (musicianAge > 0 && (musicianAge < 18 || musicianAge > (DateTime.Now.Date.Year - 1920)))
+                    throw new InvalidRequestValueException("Invalid age provided for filtering");
+             
+                return CustomResponse(
+                    await bandService.ListAsync(
+                        b => 
+                        musicianAge > 0 ? b.Musicians.Any(m => m.Age == musicianAge) : true
+                ));
+            }
+            catch (Exception ex)
+            {
+                AlertException(ex);
+                return CustomResponse();
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult<BandDTO>> Find([FromForm]string name)
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(name))
+                    if (name.Length > 20)
+                        throw new InvalidRequestValueException("The maximum characters amount for Band Name is 20");
+                else 
+                    name = "";
+                
+                var band = await bandService.FindAsync(
+                    b => 
+                    b.MusicalStyles.Contains(name)
+                    // musicalStyle == "" ? true : b.MusicalStyles.Contains(musicalStyle)
+                );
+
+                if (band is null) return NotFound();
+
+                return CustomResponse(band);
+            }
+            catch (Exception ex)
+            {
+                AlertException(ex);
+                return CustomResponse();
+            }
+        }
 
 
         [HttpGet("{id:ushort}")]
@@ -87,7 +127,7 @@ namespace ApiNetCore.Api.Controllers
             {
                 if (id != bandDTO.Id)
                 {
-                    AlertValidation("the id in the query doesn't match the object provided");
+                    AlertValidation("the id doesn't match the object provided");
                     return CustomResponse(bandDTO);
                 }
 

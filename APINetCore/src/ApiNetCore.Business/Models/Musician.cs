@@ -9,5 +9,12 @@ namespace ApiNetCore.Business.Models
         public string Roles { get; set; } = "";
         public DateTime DateOfBirth { get; set; }
         public List<Band> Bands { get; set; } = new List<Band>();
+
+        public ushort Age {
+            get 
+            { 
+                return (ushort)(DateTime.Now.Date.Year - DateOfBirth.Year);
+            }
+        }
     }
 }

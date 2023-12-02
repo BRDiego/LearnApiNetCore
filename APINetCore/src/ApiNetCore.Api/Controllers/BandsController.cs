@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace ApiNetCore.Api.Controllers
 {
-    [Route("api/bands")]
+    [Route("api/[controller]/[action]")]
     public class BandsController : MainController
     {
         private readonly IBandService bandService;
@@ -34,7 +34,7 @@ namespace ApiNetCore.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BandDTO>>> List([FromForm] ushort musicianAge)
+        public async Task<ActionResult<IEnumerable<BandDTO>>> ListByAge([FromForm] int musicianAge)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace ApiNetCore.Api.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<BandDTO>> Find([FromForm]string name)
+        public async Task<ActionResult<BandDTO>> FindByName([FromForm]string name)
         {
             try
             {
@@ -84,12 +84,13 @@ namespace ApiNetCore.Api.Controllers
         }
 
 
-        [HttpGet("{id:ushort}")]
-        public async Task<ActionResult<BandDTO>> Find(ushort id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<BandDTO>> FindById(int id)
         {
             try
             {
-                var band = await bandService.FindAsync(id);
+                var parsedId = (ushort)id;
+                var band = await bandService.FindAsync(parsedId);
 
                 if (band is null) return NotFound();
 
@@ -120,8 +121,8 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [HttpPut("{id:ushort}")]
-        public async Task<ActionResult<BandDTO>> Update(ushort id, BandDTO bandDTO)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<BandDTO>> Update(int id, BandDTO bandDTO)
         {
             try
             {
@@ -143,22 +144,24 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [HttpDelete("{id:ushort}")]
-        public async Task<ActionResult<BandDTO>> Excluir(ushort id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<BandDTO>> Excluir(int id)
         {
-            var band = await bandService.FindAsync(id);
+            var parsedId = (ushort)id;
+            var band = await bandService.FindAsync(parsedId);
 
             if (band is null) return NotFound();
 
-            await bandService.DeleteAsync(id);
+            await bandService.DeleteAsync(parsedId);
 
             return CustomResponse(band);
         }
 
-        [HttpGet("members/{id:ushort}")]
-        public async Task<ActionResult<BandDTO>> GetBandMembers(ushort id)
+        [HttpGet("members/{id:int}")]
+        public async Task<ActionResult<BandDTO>> GetBandMembers(int id)
         {
-            var band = await bandService.GetBandMembers(id);
+            var parsedId = (ushort)id;
+            var band = await bandService.GetBandMembers(parsedId);
 
             if (band is null) return NotFound();
             

@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace ApiNetCore.Api.Controllers
 {
-    [Route("api/musicians")]
+    
+    [Route("api/[controller]/[action]")]
     public class MusiciansController : MainController
     {
         private readonly IMusicianService musicianService;
@@ -34,7 +35,7 @@ namespace ApiNetCore.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MusicianDTO>>> List([FromForm] ushort musicianAge, string surname)
+        public async Task<ActionResult<IEnumerable<MusicianDTO>>> FilteredList([FromForm] int musicianAge, string surname)
         {
             try
             {
@@ -65,7 +66,7 @@ namespace ApiNetCore.Api.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<MusicianDTO>> Find([FromForm]string nickname)
+        public async Task<ActionResult<MusicianDTO>> FindByNickname([FromForm]string nickname)
         {
             try
             {
@@ -92,12 +93,13 @@ namespace ApiNetCore.Api.Controllers
         }
 
 
-        [HttpGet("{id:ushort}")]
-        public async Task<ActionResult<MusicianDTO>> Find(ushort id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<MusicianDTO>> FindById(int id)
         {
             try
             {
-                var musician = await musicianService.FindAsync(id);
+                var parsedId = (ushort)id;
+                var musician = await musicianService.FindAsync(parsedId);
 
                 if (musician is null) return NotFound();
 
@@ -128,8 +130,8 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [HttpPut("{id:ushort}")]
-        public async Task<ActionResult<MusicianDTO>> Update(ushort id, MusicianDTO musicianDTO)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<MusicianDTO>> Update(int id, MusicianDTO musicianDTO)
         {
             try
             {
@@ -151,22 +153,24 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [HttpDelete("{id:ushort}")]
-        public async Task<ActionResult<MusicianDTO>> Excluir(ushort id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<MusicianDTO>> Excluir(int id)
         {
-            var musician = await musicianService.FindAsync(id);
+            var parsedId = (ushort)id;
+            var musician = await musicianService.FindAsync(parsedId);
 
             if (musician is null) return NotFound();
 
-            await musicianService.DeleteAsync(id);
+            await musicianService.DeleteAsync(parsedId);
 
             return CustomResponse(musician);
         }
 
-        [HttpGet("bands/{id:ushort}")]
-        public async Task<ActionResult<MusicianDTO>> GetMusicianBands(ushort id)
+        [HttpGet("bands/{id:int}")]
+        public async Task<ActionResult<MusicianDTO>> GetMusicianBands(int id)
         {
-            var musician = await musicianService.GetMusicianBands(id);
+            var parsedId = (ushort)id;
+            var musician = await musicianService.GetMusicianBands(parsedId);
 
             if (musician is null) return NotFound();
             

@@ -1,3 +1,6 @@
+using ApiNetCore.Application.DTOs.Validations;
+using FluentValidation;
+
 namespace ApiNetCore.Application.DTOs
 {
     public class MusicianDTO : EntityDTO

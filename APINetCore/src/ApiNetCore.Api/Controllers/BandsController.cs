@@ -40,11 +40,13 @@ namespace ApiNetCore.Api.Controllers
             {
                 if (musicianAge > 0 && (musicianAge < 18 || musicianAge > (DateTime.Now.Date.Year - 1920)))
                     throw new InvalidRequestValueException("Invalid age provided for filtering");
-             
+
+                var birthYear = DateTime.Now.Year - musicianAge;
+
                 return CustomResponse(
                     await bandService.ListAsync(
                         b => 
-                        musicianAge > 0 ? b.Musicians.Any(m => m.Age == musicianAge) : true
+                        musicianAge > 0 ? b.Musicians.Any(m => m.DateOfBirth.Year == birthYear) : true
                 ));
             }
             catch (Exception ex)

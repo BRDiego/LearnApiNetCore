@@ -28,14 +28,14 @@ namespace ApiNetCore.Application.Services
             repository?.Dispose();
         }
 
-        public Task AddAsync(MapSourceDtoType band)
+        public Task AddAsync(MapSourceDtoType entity)
         {
-            return repository.AddAsync(MapToModel(band));
+            return repository.AddAsync(MapToModel(entity));
         }
 
-        public Task UpdateAsync(MapSourceDtoType band)
+        public Task UpdateAsync(MapSourceDtoType entity)
         {
-            return repository.UpdateAsync(MapToModel(band));
+            return repository.UpdateAsync(MapToModel(entity));
         }
 
         public Task DeleteAsync(ushort id)

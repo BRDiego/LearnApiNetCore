@@ -10,7 +10,7 @@ namespace ApiNetCore.Data.EFContext.Repository
 
         public async Task<IEnumerable<Musician>> ListMusiciansByBand(ushort bandId)
         {
-            return await dbContext.Musicians.AsNoTracking()
+            return await dbContext.Musician.AsNoTracking()
                                         .Include(m => m.Bands)
                                         .Where(m => m.Bands.Where(b => b.Id == bandId).ToList().Count > 0)
                                         .ToListAsync();
@@ -18,7 +18,7 @@ namespace ApiNetCore.Data.EFContext.Repository
 
         public async Task<Musician> GetMusicianBands(ushort id)
         {
-            return await dbContext.Musicians.AsNoTracking()
+            return await dbContext.Musician.AsNoTracking()
                                         .Include(m => m.Bands)
                                         .Where(m => m.Id == id)
                                         .FirstAsync();

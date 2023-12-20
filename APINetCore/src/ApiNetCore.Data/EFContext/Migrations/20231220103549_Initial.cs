@@ -15,11 +15,11 @@ namespace ApiNetCore.Data.EFContext.Migrations
                 name: "Band",
                 columns: table => new
                 {
-                    Id = table.Column<ushort>(type: "smallint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(20)", nullable: false),
-                    MusicalStyles = table.Column<string>(type: "varchar(50)", nullable: false),
-                    ImageFileName = table.Column<string>(type: "varchar(100)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    MusicalStyles = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ImageFileName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,14 +30,14 @@ namespace ApiNetCore.Data.EFContext.Migrations
                 name: "Musician",
                 columns: table => new
                 {
-                    Id = table.Column<ushort>(type: "smallint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(20)", nullable: false),
-                    Surnames = table.Column<string>(type: "varchar(50)", nullable: false),
-                    Nickname = table.Column<string>(type: "varchar(20)", nullable: false),
-                    PictureFileName = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Roles = table.Column<string>(type: "varchar(50)", nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "date", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Surnames = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Nickname = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    PictureFileName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Roles = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "Date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,32 +48,30 @@ namespace ApiNetCore.Data.EFContext.Migrations
                 name: "BandMusician",
                 columns: table => new
                 {
-                    BandId = table.Column<ushort>(type: "smallint", nullable: false),
-                    MusicianId = table.Column<ushort>(type: "smallint", nullable: false)
+                    BandsId = table.Column<int>(type: "int", nullable: false),
+                    MusiciansId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BandMusician", x => new { x.BandId, x.MusicianId });
+                    table.PrimaryKey("PK_BandMusician", x => new { x.BandsId, x.MusiciansId });
                     table.ForeignKey(
-                        name: "FK_BandMusician_BandId",
-                        column: x => x.BandId,
+                        name: "FK_BandMusician_Band_BandsId",
+                        column: x => x.BandsId,
                         principalTable: "Band",
                         principalColumn: "Id",
-                        onUpdate:ReferentialAction.Cascade,
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BandMusician_MusicianId",
-                        column: x => x.MusicianId,
+                        name: "FK_BandMusician_Musician_MusiciansId",
+                        column: x => x.MusiciansId,
                         principalTable: "Musician",
                         principalColumn: "Id",
-                        onUpdate:ReferentialAction.Cascade,
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BandMusician_MusicianId",
+                name: "IX_BandMusician_MusiciansId",
                 table: "BandMusician",
-                column: "MusicianId");
+                column: "MusiciansId");
         }
 
         /// <inheritdoc />

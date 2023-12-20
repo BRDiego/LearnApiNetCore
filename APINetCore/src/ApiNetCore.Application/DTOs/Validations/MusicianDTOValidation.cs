@@ -23,7 +23,7 @@ namespace ApiNetCore.Application.DTOs.Validations
 
             RuleFor(b => b.Roles)
                 .NotEmpty().WithMessage("The field {PropertyName} must be filled")
-                .Length(1, 50).WithMessage("The field {PropertyName} must contain {MinLength} to {MaxLength} characters");
+                .Length(0, 50).WithMessage("The field {PropertyName} must contain {MinLength} to {MaxLength} characters");
                  
             RuleFor(b => b.DateOfBirth)
                 .NotNull().WithMessage("The field {PropertyName} must be provided")

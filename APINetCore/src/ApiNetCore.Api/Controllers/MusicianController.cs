@@ -119,7 +119,7 @@ namespace ApiNetCore.Api.Controllers
             {
                 if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-                await musicianService.UpdateAsync(musicianDTO);
+                await musicianService.AddAsync(musicianDTO);
 
                 return CustomResponse(musicianDTO);
             }

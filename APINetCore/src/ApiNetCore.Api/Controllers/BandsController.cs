@@ -112,7 +112,7 @@ namespace ApiNetCore.Api.Controllers
             {
                 if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-                await bandService.UpdateAsync(bandDTO);
+                await bandService.AddAsync(bandDTO);
 
                 return CustomResponse(bandDTO);
             }

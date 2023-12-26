@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using ApiNetCore.Application.DTOs;
+using ApiNetCore.Application.DTOs.Interfaces;
 using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
 using ApiNetCore.Business.Models;
@@ -10,7 +11,7 @@ using FluentValidation.Results;
 
 namespace ApiNetCore.Application.Services
 {
-    public abstract class EntityService<MapSourceDtoType, MapDestinationEntityType> : BaseService, IEntityService<MapSourceDtoType, MapDestinationEntityType> where MapDestinationEntityType : Entity where MapSourceDtoType : EntityDTO
+    public abstract class EntityService<MapSourceDtoType, MapDestinationEntityType> : BaseService, IEntityService<MapSourceDtoType, MapDestinationEntityType> where MapDestinationEntityType : Entity where MapSourceDtoType : EntityDTO, IValidDtoEntity<MapSourceDtoType>
     {
         private readonly IMapper mapper;
         private readonly IEntityRepository<MapDestinationEntityType> repository;
@@ -30,11 +31,17 @@ namespace ApiNetCore.Application.Services
 
         public Task AddAsync(MapSourceDtoType entity)
         {
+            if (!ExecuteValidation(entity.GetValidator(), entity))
+                return Task.CompletedTask;
+
             return repository.AddAsync(MapToModel(entity));
         }
 
         public Task UpdateAsync(MapSourceDtoType entity)
         {
+            if (!ExecuteValidation(entity.GetValidator(), entity))
+                return Task.CompletedTask;
+
             return repository.UpdateAsync(MapToModel(entity));
         }
 

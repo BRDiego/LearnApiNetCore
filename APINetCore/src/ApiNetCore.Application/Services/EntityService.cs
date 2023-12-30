@@ -15,13 +15,17 @@ namespace ApiNetCore.Application.Services
     {
         private readonly IMapper mapper;
         private readonly IEntityRepository<MapDestinationEntityType> repository;
+        
+        protected readonly IBusinessRules businessRules;
 
         public EntityService(IAlertManager alertManager,
                                  IMapper mapper,
-                                 IEntityRepository<MapDestinationEntityType> repository) : base(alertManager)
+                                 IEntityRepository<MapDestinationEntityType> repository,
+                                 IBusinessRules businessRules) : base(alertManager)
         {
             this.mapper = mapper;
             this.repository = repository;
+            this.businessRules = businessRules;
         }
 
         public void Dispose()
@@ -31,7 +35,7 @@ namespace ApiNetCore.Application.Services
 
         public Task AddAsync(MapSourceDtoType entity)
         {
-            if (!ExecuteValidation(entity.GetValidator(), entity))
+            if (!ExecuteValidation(entity.GetFluentValidator(), entity))
                 return Task.CompletedTask;
 
             return repository.AddAsync(MapToModel(entity));
@@ -39,7 +43,7 @@ namespace ApiNetCore.Application.Services
 
         public Task UpdateAsync(MapSourceDtoType entity)
         {
-            if (!ExecuteValidation(entity.GetValidator(), entity))
+            if (!ExecuteValidation(entity.GetFluentValidator(), entity))
                 return Task.CompletedTask;
 
             return repository.UpdateAsync(MapToModel(entity));

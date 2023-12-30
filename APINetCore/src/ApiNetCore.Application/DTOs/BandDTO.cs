@@ -1,5 +1,5 @@
 using ApiNetCore.Application.DTOs.Interfaces;
-using ApiNetCore.Application.DTOs.Validations;
+using ApiNetCore.Application.DTOs.Validations.EntityFluentValidators;
 using FluentValidation;
 
 namespace ApiNetCore.Application.DTOs
@@ -12,7 +12,7 @@ namespace ApiNetCore.Application.DTOs
     
         public List<MusicianDTO> Musicians { get; set; } = new List<MusicianDTO>();
 
-        public AbstractValidator<BandDTO> GetValidator()
+        public AbstractValidator<BandDTO> GetFluentValidator()
         {
             return new BandDTOValidation();
         }

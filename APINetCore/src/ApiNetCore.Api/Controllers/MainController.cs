@@ -1,5 +1,4 @@
-using System.ComponentModel;
-using ApiNetCore.Application.Services.Interfaces;
+using ApiNetCore.Application.CustomExceptions;
 using ApiNetCore.Business.AlertsManagement;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -18,7 +17,7 @@ namespace ApiNetCore.Api.Controllers
 
         protected bool IsValidOperation()
         {
-            return !alertManager.HasAlerts();
+            return !alertManager.HasAlerts;
         }
 
         protected ActionResult CustomResponse(object? result = null)
@@ -62,10 +61,14 @@ namespace ApiNetCore.Api.Controllers
 
         protected void AlertException(Exception exception)
         {
-            var message = exception.Message;
-            message += exception.InnerException is null ? "" : Environment.NewLine + exception.InnerException.Message;
+            if (exception is not InvalidRequestValueException)
+            {
+                //TODO - Log server errors
+                //var message = exception.Message;
+                //message += exception.InnerException is null ? "" : Environment.NewLine + exception.InnerException.Message;
 
-            AlertValidation(message);
+                AlertValidation("Internal server error");
+            }
         }
 
     }

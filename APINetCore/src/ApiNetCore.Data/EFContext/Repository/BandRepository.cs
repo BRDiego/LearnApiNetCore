@@ -16,7 +16,7 @@ namespace ApiNetCore.Data.EFContext.Repository
                                         .ToListAsync();
         }
 
-        public async Task<Band> GetBandMembers(ushort id)
+        public async Task<Band> GetBandWithMembers(ushort id)
         {
             return await dbContext.Band.AsNoTracking()
                                         .Include(b => b.Musicians)

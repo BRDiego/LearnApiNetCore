@@ -3,11 +3,14 @@ using ApiNetCore.Data.EFContext.Repository;
 using ApiNetCore.Data.EFContext.Repository.Interfaces;
 using ApiNetCore.Application.Services;
 using ApiNetCore.Application.Services.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+using ApiNetCore.Application.DTOs.Interfaces;
 using ApiNetCore.Data.EFContext;
+using ApiNetCore.Application.DTOs.Validations.BusinessRulesValidators;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+
 namespace ApiNetCore.DependencyInjection;
 
 public static class DependencyInjectionConfigs
@@ -33,6 +36,8 @@ public static class DependencyInjectionConfigs
 
         services.AddScoped<IBandService, BandService>();
         services.AddScoped<IMusicianService, MusicianService>();
+
+        services.AddSingleton<IBusinessRules, BusinessRulesValidator>();
 
         return services;
     }

@@ -4,6 +4,6 @@ namespace ApiNetCore.Application.DTOs.Interfaces
 {
     public interface IValidDtoEntity<DtoType> where DtoType : EntityDTO
     {
-        public AbstractValidator<DtoType> GetValidator();
+        public AbstractValidator<DtoType> GetFluentValidator();
     }
 }

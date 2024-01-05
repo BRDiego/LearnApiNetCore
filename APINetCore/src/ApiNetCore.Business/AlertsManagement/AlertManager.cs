@@ -14,14 +14,17 @@ namespace ApiNetCore.Business.AlertsManagement
             alerts.Add(alert);
         }
 
+        public bool HasAlerts
+        {
+            get
+            {
+                return alerts.Any();
+            }
+        }
+
         public List<Alert> GetAlerts()
         {
             return alerts;
-        }
-
-        public bool HasAlerts()
-        {
-            return alerts.Any();
         }
     }
 }

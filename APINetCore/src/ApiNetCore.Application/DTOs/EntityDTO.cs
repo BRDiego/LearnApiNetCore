@@ -1,6 +1,8 @@
+using FluentValidation;
+
 namespace ApiNetCore.Application.DTOs
 {
-    public class EntityDTO
+    public abstract class EntityDTO
     {
         public ushort Id { get; set; }
     }

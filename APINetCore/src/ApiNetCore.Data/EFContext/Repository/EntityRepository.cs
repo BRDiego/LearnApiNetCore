@@ -56,7 +56,7 @@ namespace ApiNetCore.Data.EFContext.Repository
 
         public async Task<IEnumerable<TEntity>> ListAsync()
         {
-            return await dbSet.ToListAsync();
+            return await dbSet.AsNoTracking().ToListAsync();
         }
 
         public async Task<IEnumerable<TEntity>> ListAsync(Expression<Func<TEntity, bool>> predicate)

@@ -1,27 +1,31 @@
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using ApiNetCore.Application.DTOs;
+using ApiNetCore.Application.DTOs.Interfaces;
+using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
 using ApiNetCore.Business.Models;
-using ApiNetCore.Business.Services.Interfaces;
 using ApiNetCore.Data.EFContext.Repository.Interfaces;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace ApiNetCore.Business.Services
+namespace ApiNetCore.Application.Services
 {
-    public abstract class EntityService<MapSourceDtoType, MapDestinationEntityType> : BaseService, IEntityService<MapSourceDtoType, MapDestinationEntityType> where MapDestinationEntityType : Entity where MapSourceDtoType : EntityDTO
+    public abstract class EntityService<MapSourceDtoType, MapDestinationEntityType> : BaseService, IEntityService<MapSourceDtoType, MapDestinationEntityType> where MapDestinationEntityType : Entity where MapSourceDtoType : EntityDTO, IValidDtoEntity<MapSourceDtoType>
     {
         private readonly IMapper mapper;
         private readonly IEntityRepository<MapDestinationEntityType> repository;
+        
+        protected readonly IBusinessRules businessRules;
 
         public EntityService(IAlertManager alertManager,
                                  IMapper mapper,
-                                 IEntityRepository<MapDestinationEntityType> repository) : base(alertManager)
+                                 IEntityRepository<MapDestinationEntityType> repository,
+                                 IBusinessRules businessRules) : base(alertManager)
         {
             this.mapper = mapper;
             this.repository = repository;
+            this.businessRules = businessRules;
         }
 
         public void Dispose()
@@ -29,14 +33,20 @@ namespace ApiNetCore.Business.Services
             repository?.Dispose();
         }
 
-        public Task AddAsync(MapSourceDtoType band)
+        public Task AddAsync(MapSourceDtoType entity)
         {
-            return repository.AddAsync(MapToModel(band));
+            if (!ExecuteValidation(entity.GetFluentValidator(), entity))
+                return Task.CompletedTask;
+
+            return repository.AddAsync(MapToModel(entity));
         }
 
-        public Task UpdateAsync(MapSourceDtoType band)
+        public Task UpdateAsync(MapSourceDtoType entity)
         {
-            return repository.UpdateAsync(MapToModel(band));
+            if (!ExecuteValidation(entity.GetFluentValidator(), entity))
+                return Task.CompletedTask;
+
+            return repository.UpdateAsync(MapToModel(entity));
         }
 
         public Task DeleteAsync(ushort id)

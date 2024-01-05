@@ -6,9 +6,8 @@ namespace ApiNetCore.Data.EFContext
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options) { }
-
-        public DbSet<Band> Bands { get; set; }
-        public DbSet<Musician> Musicians { get; set; }
-        public DbSet<BandMusician> BandsMusicians { get; set; }
+        
+        public DbSet<Band> Band { get; set; }
+        public DbSet<Musician> Musician { get; set; }
     }
 }

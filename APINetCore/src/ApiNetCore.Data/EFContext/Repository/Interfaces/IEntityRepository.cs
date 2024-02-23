@@ -9,8 +9,8 @@ namespace ApiNetCore.Data.EFContext.Repository.Interfaces
         Task AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(ushort id);
-        Task<TEntity> FindAsync(ushort id);
-        Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<TEntity> FindByIdAsync(ushort id);
+        Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate);
         Task<IEnumerable<TEntity>> ListAsync();
         Task<IEnumerable<TEntity>> ListAsync(Expression<Func<TEntity, bool>> predicate);
     }

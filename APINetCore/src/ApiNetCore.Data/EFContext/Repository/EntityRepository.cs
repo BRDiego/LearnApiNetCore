@@ -44,14 +44,14 @@ namespace ApiNetCore.Data.EFContext.Repository
             await SaveChangesAsync();
         }
 
-        public async Task<TEntity> FindAsync(ushort id)
+        public async Task<TEntity> FindByIdAsync(ushort id)
         {
             return await dbSet.FirstAsync(x => x.Id == id);
         }
 
-        public async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await dbSet.AsNoTracking().FirstAsync(predicate);
+            return await dbSet.AsNoTracking().FirstOrDefaultAsync(predicate);
         }
 
         public async Task<IEnumerable<TEntity>> ListAsync()

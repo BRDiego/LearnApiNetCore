@@ -4,6 +4,7 @@ using ApiNetCore.Application.DTOs.Interfaces;
 using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
 using ApiNetCore.Business.Models;
+using ApiNetCore.Data.EFContext.Repository;
 using ApiNetCore.Data.EFContext.Repository.Interfaces;
 using AutoMapper;
 
@@ -52,6 +53,17 @@ namespace ApiNetCore.Application.Services
             alertManager.CheckAlerts();
 
             return MapToDto(await musicianRepository.ListAsync(m => m.Nickname.Contains(nickname)));
+        }
+
+        protected async override Task<bool> PassesDuplicityCheck(Musician entityModel)
+        {
+            var register = await musicianRepository.FindAsync(
+                m => m.Name == entityModel.Name
+                &&
+                m.DateOfBirth == entityModel.DateOfBirth
+                );
+
+            return register is null;
         }
     }
 }

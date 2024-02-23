@@ -68,7 +68,7 @@ namespace ApiNetCore.Api.Controllers
             try
             {
                 var parsedId = (ushort)id;
-                var musician = await musicianService.FindAsync(parsedId);
+                var musician = await musicianService.FindByIdAsync(parsedId);
 
                 if (musician is null) return NotFound();
 
@@ -126,7 +126,7 @@ namespace ApiNetCore.Api.Controllers
         public async Task<ActionResult<MusicianDTO>> Delete(int id)
         {
             var parsedId = (ushort)id;
-            var musician = await musicianService.FindAsync(parsedId);
+            var musician = await musicianService.FindByIdAsync(parsedId);
 
             if (musician is null) return NotFound();
 

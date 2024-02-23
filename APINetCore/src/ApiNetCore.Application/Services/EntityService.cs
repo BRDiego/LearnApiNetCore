@@ -33,38 +33,42 @@ namespace ApiNetCore.Application.Services
             repository?.Dispose();
         }
 
-        public Task AddAsync(MapSourceDtoType entity)
+        public async Task AddAsync(MapSourceDtoType entity)
         {
-            if (!ExecuteValidation(entity.GetFluentValidator(), entity))
-                return Task.CompletedTask;
+            if (ObjectIsValid(entity))
+            {
+                var entityModel = MapToModel(entity);
 
-            return repository.AddAsync(MapToModel(entity));
+                if (await PassesDuplicityCheck(entityModel))
+                {
+                    await repository.AddAsync(entityModel);
+                }
+                else
+                {
+                    Alert("Duplicity exists!");
+                }
+            }
         }
 
-        public Task UpdateAsync(MapSourceDtoType entity)
-        {
-            if (!ExecuteValidation(entity.GetFluentValidator(), entity))
-                return Task.CompletedTask;
+        protected abstract Task<bool> PassesDuplicityCheck(MapDestinationEntityType entityModel);
 
-            return repository.UpdateAsync(MapToModel(entity));
+        public async Task UpdateAsync(MapSourceDtoType entity)
+        {
+            if (ObjectIsValid(entity))
+            {
+                await repository.UpdateAsync(MapToModel(entity));
+            }
         }
 
-        public Task DeleteAsync(ushort id)
+        public async Task DeleteAsync(ushort id)
         {
-            return repository.DeleteAsync(id);
+            await repository.DeleteAsync(id);
         }
 
-        public async Task<MapSourceDtoType> FindAsync(ushort id)
+        public async Task<MapSourceDtoType> FindByIdAsync(ushort id)
         {
             return MapToDto(
-                await repository.FindAsync(id)
-            );
-        }
-
-        public async Task<MapSourceDtoType> FindAsync(Expression<Func<MapDestinationEntityType, bool>> predicate)
-        {
-            return MapToDto(
-                await repository.FindAsync(predicate)
+                await repository.FindByIdAsync(id)
             );
         }
 
@@ -93,7 +97,12 @@ namespace ApiNetCore.Application.Services
                 Alert(error.ErrorMessage);
         }
 
-        protected bool ExecuteValidation<ValidatorType>(ValidatorType validation, MapSourceDtoType entity) where ValidatorType : AbstractValidator<MapSourceDtoType>
+        protected bool ObjectIsValid(MapSourceDtoType entity)
+        {
+            return ValidateObject(entity.GetFluentValidator(), entity);
+        }
+
+        protected bool ValidateObject<ValidatorType>(ValidatorType validation, MapSourceDtoType entity) where ValidatorType : AbstractValidator<MapSourceDtoType>
         {
             var validationResult = validation.Validate(entity);
 

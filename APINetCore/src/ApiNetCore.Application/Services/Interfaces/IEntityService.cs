@@ -9,8 +9,7 @@ namespace ApiNetCore.Application.Services.Interfaces
         Task AddAsync(DtoType band);
         Task UpdateAsync(DtoType band);
         Task DeleteAsync(ushort id);
-        Task<DtoType> FindAsync(ushort id);
-        Task<DtoType> FindAsync(Expression<Func<EntityType, bool>> predicate);
+        Task<DtoType> FindByIdAsync(ushort id);
         Task<IEnumerable<DtoType>> ListAsync();
         Task<IEnumerable<DtoType>> ListAsync(Expression<Func<EntityType, bool>> predicate);
     }

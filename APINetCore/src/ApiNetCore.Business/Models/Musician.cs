@@ -33,5 +33,24 @@ namespace ApiNetCore.Business.Models
                 return (ushort)(DateTime.Now.Date.Year - DateOfBirth.Year);
             }
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is null || obj is not Musician)
+            {
+                return false;
+            }
+
+            Musician other = (obj as Musician)!;
+
+            return Name.Equals(other.Name)
+                && DateOfBirth.Equals(other.DateOfBirth);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, DateOfBirth);
+        }
+
     }
 }

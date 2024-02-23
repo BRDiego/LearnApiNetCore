@@ -1,5 +1,4 @@
-﻿using ApiNetCore.Application.CustomExceptions;
-using ApiNetCore.Application.DTOs.Interfaces;
+﻿using ApiNetCore.Application.DTOs.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
 
 namespace ApiNetCore.Application.DTOs.Validations.BusinessRulesValidators

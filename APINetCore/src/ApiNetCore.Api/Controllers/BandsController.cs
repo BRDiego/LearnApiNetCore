@@ -67,7 +67,7 @@ namespace ApiNetCore.Api.Controllers
             try
             {
                 var parsedId = (ushort)id;
-                var band = await bandService.FindAsync(parsedId);
+                var band = await bandService.FindByIdAsync(parsedId);
 
                 if (band is null) return NotFound();
 
@@ -125,7 +125,7 @@ namespace ApiNetCore.Api.Controllers
         public async Task<ActionResult<BandDTO>> Delete(int id)
         {
             var parsedId = (ushort)id;
-            var band = await bandService.FindAsync(parsedId);
+            var band = await bandService.FindByIdAsync(parsedId);
 
             if (band is null) return NotFound();
 

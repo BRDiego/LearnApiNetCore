@@ -37,7 +37,7 @@ public static class DependencyInjectionConfigs
         services.AddScoped<IBandService, BandService>();
         services.AddScoped<IMusicianService, MusicianService>();
 
-        services.AddSingleton<IBusinessRules, BusinessRulesValidator>();
+        services.AddScoped<IBusinessRules, BusinessRulesValidator>();
 
         return services;
     }

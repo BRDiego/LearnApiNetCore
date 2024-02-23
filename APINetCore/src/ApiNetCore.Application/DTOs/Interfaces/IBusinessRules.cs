@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ApiNetCore.Application.DTOs.Interfaces
+﻿namespace ApiNetCore.Application.DTOs.Interfaces
 {
     public interface IBusinessRules
     {
         #region "Musician"
-        bool IsValidMusicianAge(int age);
-        bool IsValidMusicianSurname(string surname);
-        bool IsValidMusicianNickname(string nickname);
+        void ValidateMusicianAge(int age);
+        void ValidateMusicianSurname(string surname);
+        void ValidateMusicianNickname(string nickname);
         #endregion
 
         #region "Band"
-        bool IsValidBandName(string name);
+        void ValidateBandName(string name);
         #endregion
     }
 }

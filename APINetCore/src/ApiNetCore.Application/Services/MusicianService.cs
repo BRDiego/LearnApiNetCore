@@ -34,14 +34,10 @@ namespace ApiNetCore.Application.Services
 
         public async Task<IEnumerable<MusicianDTO>> SearchAsync(int musicianAge, string surname)
         {
-            if (musicianAge > 0 && !businessRules.IsValidMusicianAge(musicianAge))
-                Alert("Invalid age provided for searching");
+            businessRules.ValidateMusicianAge(musicianAge);
+            businessRules.ValidateMusicianSurname(surname);
 
-            if (!businessRules.IsValidMusicianSurname(surname))
-                Alert("Invalid surname provided for filtering");
-
-            if (alertManager.HasAlerts)
-                InvalidRequestValueException.AlertValidationException();
+            alertManager.CheckAlerts();
 
             return MapToDto(await musicianRepository.ListAsync(m =>
                     musicianAge > 0 ? m.Age == musicianAge : true
@@ -52,8 +48,8 @@ namespace ApiNetCore.Application.Services
 
         public async Task<IEnumerable<MusicianDTO>> ListByNicknameAsync(string nickname)
         {
-            if (!businessRules.IsValidMusicianNickname(nickname))
-                InvalidRequestValueException.AlertValidationException();
+            businessRules.ValidateMusicianNickname(nickname);
+            alertManager.CheckAlerts();
 
             return MapToDto(await musicianRepository.ListAsync(m => m.Nickname.Contains(nickname)));
         }

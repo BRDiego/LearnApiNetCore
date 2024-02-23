@@ -1,4 +1,6 @@
 
+using ApiNetCore.Application.CustomExceptions;
+
 namespace ApiNetCore.Business.AlertsManagement
 {
     public class AlertManager : IAlertManager
@@ -25,6 +27,14 @@ namespace ApiNetCore.Business.AlertsManagement
         public List<Alert> GetAlerts()
         {
             return alerts;
+        }
+
+        public void CheckAlerts()
+        {
+            if (HasAlerts)
+            {
+                ShowAlertsException.ThrowAlertsException();
+            }
         }
     }
 }

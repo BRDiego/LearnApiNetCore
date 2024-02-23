@@ -61,7 +61,7 @@ namespace ApiNetCore.Api.Controllers
 
         protected void AlertException(Exception exception)
         {
-            if (exception is not InvalidRequestValueException)
+            if (exception is not ShowAlertsException)
             {
                 //TODO - Log server errors
                 //var message = exception.Message;

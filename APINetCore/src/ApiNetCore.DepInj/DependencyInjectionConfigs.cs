@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using System.Text.Json.Serialization;
 
 namespace ApiNetCore.DependencyInjection;
 
@@ -39,6 +40,7 @@ public static class DependencyInjectionConfigs
 
         services.AddScoped<IBusinessRules, BusinessRulesValidator>();
 
+        services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
         return services;
     }
 }

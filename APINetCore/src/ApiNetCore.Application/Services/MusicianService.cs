@@ -23,36 +23,33 @@ namespace ApiNetCore.Application.Services
             this.musicianRepository = musicianRepository;
         }
 
-        public async Task<IEnumerable<MusicianDTO>> ListMusiciansByBand(ushort bandId)
-        {
-            return MapToDto(await musicianRepository.ListMusiciansByBand(bandId));
-        }
-
         public async Task<MusicianDTO> GetMusicianWithBands(ushort id)
         {
             return MapToDto(await musicianRepository.GetMusicianWithBands(id));
         }
 
-        public async Task<IEnumerable<MusicianDTO>> SearchAsync(int musicianAge, string surname)
+        public async Task<IEnumerable<MusicianDTO>> SearchAsync(int? musicianAge, string? surname, string? nickname)
         {
-            businessRules.ValidateMusicianAge(musicianAge);
-            businessRules.ValidateMusicianSurname(surname);
+            businessRules.ValidateMusicianAge(ref musicianAge);
+            businessRules.ValidateMusicianSurname(ref surname);
+            businessRules.ValidateMusicianNickname(ref nickname);
 
             alertManager.CheckAlerts();
+
+            var possibleYearsOfBirth = new List<int>();
+            var yearOfBirth = DateTime.Now.Year - musicianAge!.Value;
+
+            possibleYearsOfBirth.Add(yearOfBirth);
+            possibleYearsOfBirth.Add(yearOfBirth - 1);
 
             return MapToDto(await musicianRepository.ListAsync(m =>
-                    musicianAge > 0 ? m.Age == musicianAge : true
+                    
+                    musicianAge > 0 ? possibleYearsOfBirth.Contains(m.DateOfBirth.Year) : true
                     &&
-                    m.Surnames.Contains(surname)
+                    m.Surnames.Contains(surname!)
+                    &&
+                    m.Nickname.Contains(nickname!)
                     ));
-        }
-
-        public async Task<IEnumerable<MusicianDTO>> ListByNicknameAsync(string nickname)
-        {
-            businessRules.ValidateMusicianNickname(nickname);
-            alertManager.CheckAlerts();
-
-            return MapToDto(await musicianRepository.ListAsync(m => m.Nickname.Contains(nickname)));
         }
 
         protected async override Task<bool> PassesDuplicityCheck(Musician entityModel)

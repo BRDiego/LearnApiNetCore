@@ -31,7 +31,7 @@ namespace ApiNetCore.Api.Controllers
                 };
 
                 if (result is null)
-                    return BadRequest(obj);
+                    return NotFound(obj);
                 else
                     return Ok(obj);
             }

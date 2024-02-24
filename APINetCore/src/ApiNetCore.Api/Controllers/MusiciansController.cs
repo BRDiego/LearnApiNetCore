@@ -6,7 +6,7 @@ using ApiNetCore.Business.AlertsManagement;
 namespace ApiNetCore.Api.Controllers
 {
     
-    [Route("api/[controller]/[action]")]
+    [Route("api/musicians")]
     public class MusiciansController : MainController
     {
         private readonly IMusicianService musicianService;
@@ -18,7 +18,7 @@ namespace ApiNetCore.Api.Controllers
             this.musicianService = musicianService;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         public async Task<ActionResult<IEnumerable<MusicianDTO>>> List()
         {
             try
@@ -32,12 +32,14 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<MusicianDTO>>> Search([FromForm] int musicianAge, string surname)
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<MusicianDTO>>> Search([FromForm] int? musicianAge,[FromForm] string? surname,[FromForm] string? nickname)
         {
             try
             {
-                return CustomResponse(await musicianService.SearchAsync(musicianAge, surname));
+                return CustomResponse(
+                    await musicianService.SearchAsync(musicianAge, surname, nickname)
+                    );
             }
             catch (Exception ex)
             {
@@ -45,22 +47,6 @@ namespace ApiNetCore.Api.Controllers
                 return CustomResponse();
             }
         }
-
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<MusicianDTO>>> ListByNickname([FromForm]string nickname)
-        {
-            try
-            {
-                return CustomResponse(await musicianService.ListByNicknameAsync(nickname));
-            }
-            catch (Exception ex)
-            {
-                AlertException(ex);
-                return CustomResponse();
-            }
-        }
-
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MusicianDTO>> FindById(int id)
@@ -68,17 +54,25 @@ namespace ApiNetCore.Api.Controllers
             try
             {
                 var parsedId = (ushort)id;
-                var musician = await musicianService.FindByIdAsync(parsedId);
-
-                if (musician is null) return NotFound();
-
-                return CustomResponse(musician);
+                return CustomResponse(
+                    await musicianService.FindByIdAsync(parsedId)
+                    );
             }
             catch (Exception ex)
             {
                 AlertException(ex);
                 return CustomResponse();
             }
+        }
+
+        [HttpGet("{id:int}/bands")]
+        public async Task<ActionResult<MusicianDTO>> GetMusicianWithBands(int id)
+        {
+            var parsedId = (ushort)id;
+
+            return CustomResponse(
+                await musicianService.GetMusicianWithBands(parsedId)
+                );
         }
 
         [HttpPost]
@@ -128,21 +122,9 @@ namespace ApiNetCore.Api.Controllers
             var parsedId = (ushort)id;
             var musician = await musicianService.FindByIdAsync(parsedId);
 
-            if (musician is null) return NotFound();
+            if (IsRegisterLoaded(musician))
+                await musicianService.DeleteAsync(parsedId);
 
-            await musicianService.DeleteAsync(parsedId);
-
-            return CustomResponse(musician);
-        }
-
-        [HttpGet("bands/{id:int}")]
-        public async Task<ActionResult<MusicianDTO>> GetMusicianWithBands(int id)
-        {
-            var parsedId = (ushort)id;
-            var musician = await musicianService.GetMusicianWithBands(parsedId);
-
-            if (musician is null) return NotFound();
-            
             return CustomResponse(musician);
         }
     }

@@ -69,8 +69,6 @@ namespace ApiNetCore.Api.Controllers
                 var parsedId = (ushort)id;
                 var band = await bandService.FindByIdAsync(parsedId);
 
-                IsRegisterLoaded(band);
-
                 return CustomResponse(band);
             }
             catch (Exception ex)
@@ -86,8 +84,6 @@ namespace ApiNetCore.Api.Controllers
             var parsedId = (ushort)id;
             var band = await bandService.GetBandWithMembers(parsedId);
             
-            IsRegisterLoaded(band);
-
             return CustomResponse(band);
         }
 

@@ -8,20 +8,12 @@ namespace ApiNetCore.Data.EFContext.Repository
     {
         public MusicianRepository(ApplicationDbContext context) : base(context)  { }
 
-        public async Task<IEnumerable<Musician>> ListMusiciansByBand(ushort bandId)
-        {
-            return await dbContext.Musician.AsNoTracking()
-                                        .Include(m => m.Bands)
-                                        .Where(m => m.Bands.Where(b => b.Id == bandId).ToList().Count > 0)
-                                        .ToListAsync();
-        }
-
-        public async Task<Musician> GetMusicianWithBands(ushort id)
+        public async Task<Musician?> GetMusicianWithBands(ushort id)
         {
             return await dbContext.Musician.AsNoTracking()
                                         .Include(m => m.Bands)
                                         .Where(m => m.Id == id)
-                                        .FirstAsync();
+                                        .FirstOrDefaultAsync();
         }
     }
 }

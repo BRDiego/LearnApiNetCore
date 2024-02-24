@@ -15,28 +15,44 @@ namespace ApiNetCore.Application.DTOs.Validations.BusinessRulesValidators
             alertManager.Handle(new Alert(message));
         }
 
-        public void ValidateBandName(string? name)
+        public void ValidateBandName(ref string? name)
         {
             if (string.IsNullOrEmpty(name) || name.Length > 20)
                 Alert("Invalid name provided");
+
+            name = CheckString(name);
         }
 
-        public void ValidateMusicianAge(int? age)
+        public void ValidateMusicianAge(ref int? age)
         {
-            if ((age is null) || age > 0 && (age < 18 || age > (DateTime.Now.Date.Year - 1920)))
+            if (age is not null && age > 0 && (age < 18 || age > (DateTime.Now.Date.Year - 1920)))
                 Alert("Invalid age provided");
+
+            age ??= 0;
         }
 
-        public void ValidateMusicianSurname(string surname)
+        public void ValidateMusicianSurname(ref string? surname)
         {
-            if (!string.IsNullOrEmpty(surname) && surname.Length < 51)
+            if (string.IsNullOrEmpty(surname) || surname.Length > 51)
                 Alert("Invalid surname provided");
+
+            surname = CheckString(surname);
         }
 
-        public void ValidateMusicianNickname(string nickname)
+        public void ValidateMusicianNickname(ref string? nickname)
         {
-            if (!string.IsNullOrEmpty(nickname) && nickname.Length < 21)
+            if (string.IsNullOrEmpty(nickname) && nickname.Length > 21)
                 Alert("Invalid nickname provided");
+
+            nickname = CheckString(nickname);
+        }
+
+        private string CheckString(string? value)
+        {
+            value ??= "";
+            value = value.Trim();
+
+            return value;
         }
     }
 }

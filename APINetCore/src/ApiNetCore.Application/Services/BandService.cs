@@ -22,11 +22,6 @@ namespace ApiNetCore.Application.Services
             this.bandRepository = bandRepository;
         }
 
-        public async Task<IEnumerable<BandDTO>> ListBandsByMusicianId(ushort musicianId)
-        {
-            return MapToDto(await bandRepository.ListBandsByMusicianId(musicianId));
-        }
-
         public async Task<BandDTO> GetBandWithMembers(ushort id)
         {
             return MapToDto(await bandRepository.GetBandWithMembers(id));
@@ -35,8 +30,8 @@ namespace ApiNetCore.Application.Services
         public async Task<IEnumerable<BandDTO>> ListByMusiciansAgeAsync(int? minimumMusicianAge, int? maximumMusicianAge)
         {
 
-            businessRules.ValidateMusicianAge(minimumMusicianAge);
-            businessRules.ValidateMusicianAge(maximumMusicianAge);
+            businessRules.ValidateMusicianAge(ref minimumMusicianAge);
+            businessRules.ValidateMusicianAge(ref maximumMusicianAge);
 
             alertManager.CheckAlerts();
 
@@ -62,20 +57,13 @@ namespace ApiNetCore.Application.Services
 
         public async Task<BandDTO?> FindByNameAsync(string? name)
         {
-            businessRules.ValidateBandName(name);
+            businessRules.ValidateBandName(ref name);
 
             alertManager.CheckAlerts();
 
-            name = name!.Trim();
-
             var register = await bandRepository.FindAsync(b => b.Name.Contains(name!));
 
-            if (register is not null)
-            {
-                return MapToDto(register);
-            }
-
-            return null;
+            return MapToDto(register);
         }
 
         protected async override Task<bool> PassesDuplicityCheck(Band entityModel)

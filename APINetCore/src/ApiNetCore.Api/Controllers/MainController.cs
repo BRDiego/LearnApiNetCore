@@ -71,5 +71,16 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
+        protected bool IsRegisterLoaded(object? register)
+        {
+            if (register is null)
+            {
+                AlertValidation("register not found");
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }

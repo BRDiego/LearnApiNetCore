@@ -61,7 +61,7 @@ namespace ApiNetCore.Application.Services
             return MapToDto(result);
         }
 
-        public async Task<BandDTO> FindByNameAsync(string name)
+        public async Task<BandDTO?> FindByNameAsync(string name)
         {
             businessRules.ValidateBandName(name);
 

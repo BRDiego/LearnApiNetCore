@@ -65,7 +65,7 @@ namespace ApiNetCore.Application.Services
             await repository.DeleteAsync(id);
         }
 
-        public async Task<MapSourceDtoType> FindByIdAsync(ushort id)
+        public async Task<MapSourceDtoType?> FindByIdAsync(ushort id)
         {
             return MapToDto(
                 await repository.FindByIdAsync(id)
@@ -118,7 +118,7 @@ namespace ApiNetCore.Application.Services
             return mapper.Map<MapDestinationEntityType>(entityDTO);
         }
 
-        protected MapSourceDtoType MapToDto(MapDestinationEntityType entity)
+        protected MapSourceDtoType MapToDto(MapDestinationEntityType? entity)
         {
             return mapper.Map<MapSourceDtoType>(entity);
         }

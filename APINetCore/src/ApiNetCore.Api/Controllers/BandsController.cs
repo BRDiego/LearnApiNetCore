@@ -5,7 +5,7 @@ using ApiNetCore.Business.AlertsManagement;
 
 namespace ApiNetCore.Api.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/bands")]
     public class BandsController : MainController
     {
         private readonly IBandService bandService;
@@ -17,7 +17,7 @@ namespace ApiNetCore.Api.Controllers
             this.bandService = bandService;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         public async Task<ActionResult<IEnumerable<BandDTO>>> List()
         {
             try
@@ -31,7 +31,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("list-by-musician-age")]
         public async Task<ActionResult<IEnumerable<BandDTO>>> ListByMusiciansAge([FromForm] int minimumMusicianAge, [FromForm] int maximumMusicianAge)
         {
             try
@@ -46,7 +46,7 @@ namespace ApiNetCore.Api.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("find-by-name")]
         public async Task<ActionResult<BandDTO>> FindByName([FromForm] string name)
         {
             try
@@ -69,7 +69,7 @@ namespace ApiNetCore.Api.Controllers
                 var parsedId = (ushort)id;
                 var band = await bandService.FindByIdAsync(parsedId);
 
-                if (band is null) return NotFound();
+                IsRegisterLoaded(band);
 
                 return CustomResponse(band);
             }
@@ -78,6 +78,17 @@ namespace ApiNetCore.Api.Controllers
                 AlertException(ex);
                 return CustomResponse();
             }
+        }
+
+        [HttpGet("{id:int}/members")]
+        public async Task<ActionResult<BandDTO>> GetBandWithMembers(int id)
+        {
+            var parsedId = (ushort)id;
+            var band = await bandService.GetBandWithMembers(parsedId);
+            
+            IsRegisterLoaded(band);
+
+            return CustomResponse(band);
         }
 
         [HttpPost]
@@ -127,20 +138,8 @@ namespace ApiNetCore.Api.Controllers
             var parsedId = (ushort)id;
             var band = await bandService.FindByIdAsync(parsedId);
 
-            if (band is null) return NotFound();
-
-            await bandService.DeleteAsync(parsedId);
-
-            return CustomResponse(band);
-        }
-
-        [HttpGet("members/{id:int}")]
-        public async Task<ActionResult<BandDTO>> GetBandWithMembers(int id)
-        {
-            var parsedId = (ushort)id;
-            var band = await bandService.GetBandWithMembers(parsedId);
-
-            if (band is null) return NotFound();
+            if (IsRegisterLoaded(band))
+                await bandService.DeleteAsync(parsedId);
 
             return CustomResponse(band);
         }

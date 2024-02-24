@@ -24,11 +24,16 @@ namespace ApiNetCore.Api.Controllers
         {
             if (IsValidOperation())
             {
-                return Ok(new
+                var obj = new
                 {
                     success = true,
                     data = result
-                });
+                };
+
+                if (result is null)
+                    return BadRequest(obj);
+                else
+                    return Ok(obj);
             }
 
             return BadRequest(new

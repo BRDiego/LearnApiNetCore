@@ -15,15 +15,15 @@ namespace ApiNetCore.Application.DTOs.Validations.BusinessRulesValidators
             alertManager.Handle(new Alert(message));
         }
 
-        public void ValidateBandName(string name)
+        public void ValidateBandName(string? name)
         {
             if (string.IsNullOrEmpty(name) || name.Length > 20)
                 Alert("Invalid name provided");
         }
 
-        public void ValidateMusicianAge(int age)
+        public void ValidateMusicianAge(int? age)
         {
-            if (age > 0 && (age < 18 || age > (DateTime.Now.Date.Year - 1920)))
+            if ((age is null) || age > 0 && (age < 18 || age > (DateTime.Now.Date.Year - 1920)))
                 Alert("Invalid age provided");
         }
 

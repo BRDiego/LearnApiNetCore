@@ -44,9 +44,9 @@ namespace ApiNetCore.Data.EFContext.Repository
             await SaveChangesAsync();
         }
 
-        public async Task<TEntity> FindByIdAsync(ushort id)
+        public async Task<TEntity?> FindByIdAsync(ushort id)
         {
-            return await dbSet.FirstAsync(x => x.Id == id);
+            return await dbSet.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
@@ -61,7 +61,7 @@ namespace ApiNetCore.Data.EFContext.Repository
 
         public async Task<IEnumerable<TEntity>> ListAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await dbSet.Where(predicate).ToListAsync();
+            return await dbSet.AsNoTracking().Where(predicate).ToListAsync();
         }
     }
 }

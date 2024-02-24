@@ -7,7 +7,7 @@ namespace ApiNetCore.Application.Services.Interfaces
     {
         Task<IEnumerable<BandDTO>> ListBandsByMusicianId(ushort musicianId);
         Task<BandDTO> GetBandWithMembers(ushort id);
-        Task<IEnumerable<BandDTO>> ListByMusiciansAgeAsync(int minimumMusicianAge, int maximumMusicianAge);
-        Task<BandDTO?> FindByNameAsync(string name);
+        Task<IEnumerable<BandDTO>> ListByMusiciansAgeAsync(int? minimumMusicianAge, int? maximumMusicianAge);
+        Task<BandDTO?> FindByNameAsync(string? name);
     }
 }

@@ -32,7 +32,7 @@ namespace ApiNetCore.Api.Controllers
         }
 
         [HttpGet("list-by-musician-age")]
-        public async Task<ActionResult<IEnumerable<BandDTO>>> ListByMusiciansAge([FromForm] int minimumMusicianAge, [FromForm] int maximumMusicianAge)
+        public async Task<ActionResult<IEnumerable<BandDTO>>> ListByMusiciansAge([FromForm] int? minimumMusicianAge, [FromForm] int? maximumMusicianAge)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace ApiNetCore.Api.Controllers
 
 
         [HttpGet("find-by-name")]
-        public async Task<ActionResult<BandDTO>> FindByName([FromForm] string name)
+        public async Task<ActionResult<BandDTO>> FindByName([FromForm] string? name)
         {
             try
             {

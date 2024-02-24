@@ -32,14 +32,13 @@ namespace ApiNetCore.Application.Services
             return MapToDto(await bandRepository.GetBandWithMembers(id));
         }
 
-        public async Task<IEnumerable<BandDTO>> ListByMusiciansAgeAsync(int minimumMusicianAge, int maximumMusicianAge)
+        public async Task<IEnumerable<BandDTO>> ListByMusiciansAgeAsync(int? minimumMusicianAge, int? maximumMusicianAge)
         {
 
             businessRules.ValidateMusicianAge(minimumMusicianAge);
             businessRules.ValidateMusicianAge(maximumMusicianAge);
 
-            if (alertManager.HasAlerts)
-                ShowAlertsException.ThrowAlertsException();
+            alertManager.CheckAlerts();
 
             var minBirthYear = DateTime.Now.Year - minimumMusicianAge;
             var maxBirthYear = DateTime.Now.Year - maximumMusicianAge;
@@ -61,13 +60,15 @@ namespace ApiNetCore.Application.Services
             return MapToDto(result);
         }
 
-        public async Task<BandDTO?> FindByNameAsync(string name)
+        public async Task<BandDTO?> FindByNameAsync(string? name)
         {
             businessRules.ValidateBandName(name);
 
             alertManager.CheckAlerts();
 
-            var register = await bandRepository.FindAsync(b => b.Name.Contains(name));
+            name = name!.Trim();
+
+            var register = await bandRepository.FindAsync(b => b.Name.Contains(name!));
 
             if (register is not null)
             {

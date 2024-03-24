@@ -61,7 +61,7 @@ namespace ApiNetCore.Api.Controllers
 
         protected void AlertValidation(string message)
         {
-            alertManager.Handle(new Alert(message));
+            alertManager.AddAlert(message);
         }
 
         protected void AlertException(Exception exception)

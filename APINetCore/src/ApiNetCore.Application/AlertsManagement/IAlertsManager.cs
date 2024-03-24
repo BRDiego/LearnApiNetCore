@@ -6,6 +6,6 @@ namespace ApiNetCore.Business.AlertsManagement
 
         void CheckAlerts();
         List<Alert> GetAlerts();
-        void Handle(Alert alert);
+        void AddAlert(string message);
     }
 }

@@ -11,7 +11,7 @@ namespace ApiNetCore.Business.AlertsManagement
         {
             alerts =  new ();
         }
-        public void Handle(Alert alert)
+        private void Handle(Alert alert)
         {
             alerts.Add(alert);
         }
@@ -33,8 +33,13 @@ namespace ApiNetCore.Business.AlertsManagement
         {
             if (HasAlerts)
             {
-                ShowAlertsException.ThrowAlertsException();
+                ShowAlertsException.Throw();
             }
+        }
+
+        public void AddAlert(string message)
+        {
+            Handle(new Alert(message));
         }
     }
 }

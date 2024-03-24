@@ -88,7 +88,7 @@ namespace ApiNetCore.Application.Services
 
         protected void Alert(string message)
         {
-            alertManager.Handle(new Alert(message));
+            alertManager.AddAlert(message);
         }
 
         protected void Alert(ValidationResult validationResult)

@@ -6,7 +6,7 @@ public class ShowAlertsException : Exception
     {
     }
 
-    public static void ThrowAlertsException()
+    public static void Throw()
     {
         throw new ShowAlertsException();
     }

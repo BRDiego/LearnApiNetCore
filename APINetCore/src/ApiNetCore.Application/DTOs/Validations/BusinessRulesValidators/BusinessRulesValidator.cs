@@ -12,7 +12,7 @@ namespace ApiNetCore.Application.DTOs.Validations.BusinessRulesValidators
         }
         private void Alert(string message)
         {
-            alertManager.Handle(new Alert(message));
+            alertManager.AddAlert(message);
         }
 
         public void ValidateBandName(ref string? name)

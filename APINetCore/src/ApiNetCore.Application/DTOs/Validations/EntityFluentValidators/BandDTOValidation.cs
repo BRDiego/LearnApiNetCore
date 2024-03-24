@@ -1,8 +1,9 @@
 using FluentValidation;
+using System.Text.RegularExpressions;
 
 namespace ApiNetCore.Application.DTOs.Validations.EntityFluentValidators
 {
-    public class BandDTOValidation : AbstractValidator<BandDTO>
+    public partial class BandDTOValidation : AbstractValidator<BandDTO>
     {
         public BandDTOValidation()
         {
@@ -13,9 +14,23 @@ namespace ApiNetCore.Application.DTOs.Validations.EntityFluentValidators
             RuleFor(b => b.MusicalStyles)
                 .NotEmpty().WithMessage("The field {PropertyName} must be filled")
                 .Length(3, 50).WithMessage("The field {PropertyName} must contain {MinLength} to {MaxLength} characters");
+            
+            RuleFor(b => b.ImageUploadingName)
+                .NotEmpty().When(b => !string.IsNullOrEmpty(b.ImageUploadingBase64))
+                .WithMessage("image name must be filled when sending a base64 image");
 
-            RuleFor(b => b.ImageFileName)
-                .Length(0, 100).WithMessage("The field {PropertyName} can have a maximum of {MaxLength} characters");
+            RuleFor(b => b.ImageUploadingName)
+                .Must(name => ImageNameHasExtensionRegex().IsMatch(name))
+                .WithMessage("image extension could not be identified")
+                .Must(name => ValidImageExtensionRegex().IsMatch(name))
+                .WithMessage("only jpg, jpeg and png extensions are allowed");
         }
+
+
+        [GeneratedRegex("\\.[a-zA-Z0-9]+$")]
+        private static partial Regex ImageNameHasExtensionRegex();
+
+        [GeneratedRegex("\\.(jpg|png|jpeg)$")]
+        private static partial Regex ValidImageExtensionRegex();
     }
 }

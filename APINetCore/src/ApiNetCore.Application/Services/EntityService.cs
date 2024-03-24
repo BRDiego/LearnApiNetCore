@@ -35,7 +35,7 @@ namespace ApiNetCore.Application.Services
 
         public async Task AddAsync(MapSourceDtoType entity)
         {
-            if (ObjectIsValid(entity))
+            if (ObjectIsValid(ref entity))
             {
                 var entityModel = MapToModel(entity);
 
@@ -54,7 +54,7 @@ namespace ApiNetCore.Application.Services
 
         public async Task UpdateAsync(MapSourceDtoType entity)
         {
-            if (ObjectIsValid(entity))
+            if (ObjectIsValid(ref entity))
             {
                 await repository.UpdateAsync(MapToModel(entity));
             }
@@ -97,7 +97,7 @@ namespace ApiNetCore.Application.Services
                 Alert(error.ErrorMessage);
         }
 
-        protected bool ObjectIsValid(MapSourceDtoType entity)
+        protected virtual bool ObjectIsValid(ref MapSourceDtoType entity)
         {
             return ValidateObject(entity.GetFluentValidator(), entity);
         }

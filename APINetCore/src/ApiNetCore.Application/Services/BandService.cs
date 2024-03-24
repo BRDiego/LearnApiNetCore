@@ -1,6 +1,6 @@
-using ApiNetCore.Application.CustomExceptions;
 using ApiNetCore.Application.DTOs;
 using ApiNetCore.Application.DTOs.Interfaces;
+using ApiNetCore.Application.Procedures.Files;
 using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
 using ApiNetCore.Business.Models;
@@ -73,6 +73,35 @@ namespace ApiNetCore.Application.Services
                 );
 
             return register is null;
+        }
+
+        protected override bool ObjectIsValid(ref BandDTO band)
+        {
+            var isValid = base.ObjectIsValid(ref band);
+
+            if (isValid)
+            {
+                var proc = ImageProcedures.Create(alertManager);
+
+                var oldImageFileName = band.ImageFileName;
+
+                var newImage = false;
+                if (!string.IsNullOrEmpty(band.ImageUploadingBase64))
+                {
+                    newImage = true;
+                    band.ImageFileName = proc.SaveFileFromBase64(band.ImageUploadingBase64, band.ImageUploadingName);
+                }
+                else if (band.ImageUploadStream is not null && band.ImageUploadStream.Length > 0)
+                {
+                    newImage = true;
+                    band.ImageFileName = proc.SaveFileFromStream(band.ImageUploadStream, band.ImageUploadingName);
+                }
+
+                if (newImage)
+                    proc.DeleteImage(oldImageFileName);
+            }
+
+            return isValid;
         }
     }
 }

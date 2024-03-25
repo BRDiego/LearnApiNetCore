@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ApiNetCore.Application.DTOs;
 using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
+using ApiNetCore.Application.DTOs.Extensions;
 
 namespace ApiNetCore.Api.Controllers
 {
@@ -104,6 +105,25 @@ namespace ApiNetCore.Api.Controllers
                 return CustomResponse();
             }
         }
+        
+        [HttpPost("create-with-image")]
+        public async Task<ActionResult<BandDTO>> CreateWithImage(
+            [ModelBinder(BinderType = typeof(BandDtoModelBinder))] BandImageDTO bandDtoWithImage)
+        {
+            try
+            {
+                if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+                await bandService.AddAsync(bandDtoWithImage);
+
+                return CustomResponse(bandDtoWithImage);
+            }
+            catch (Exception ex)
+            {
+                AlertException(ex);
+                return CustomResponse();
+            }
+        }
 
         [HttpPut("{id:int}")]
         public async Task<ActionResult<BandDTO>> Update(int id, BandDTO bandDTO)
@@ -120,6 +140,23 @@ namespace ApiNetCore.Api.Controllers
                 await bandService.UpdateAsync(bandDTO);
 
                 return CustomResponse(bandDTO);
+            }
+            catch (Exception ex)
+            {
+                AlertException(ex);
+                return CustomResponse();
+            }
+        }
+
+        [HttpPut("{id:int}/updateImage")]
+        public async Task<ActionResult<BandDTO>> UpdateImage(int id, [FromForm] IFormFile imageUpload)
+        {
+            try
+            {
+                var parsedId = (ushort)id;
+                await bandService.UpdateImageAsync(parsedId, imageUpload);
+
+                return CustomResponse();
             }
             catch (Exception ex)
             {

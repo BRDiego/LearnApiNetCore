@@ -22,23 +22,20 @@ namespace ApiNetCore.Application.Procedures.Files
             return new ImageProcedures(alertManager);
         }
 
-        private bool ValidateImage(long fileLength)
+        private void ValidateImage(long fileLength)
         {
             if (FileSizeChecker.Instance.GetKilobytesSize(50) < fileLength)
             {
                 alertManager.AddAlert("image surpass the 50kb limit");
-                return false;
+                alertManager.CheckAlerts();
             }
-
-            return true;
         }
 
         public string SaveFileFromBase64(string file64, string uploadedImageName)
         {
             var fileDataByteArray = Convert.FromBase64String(file64);
 
-            if (!ValidateImage(fileDataByteArray.Length))
-                ShowAlertsException.Throw();
+            ValidateImage(fileDataByteArray.Length);
 
             var fileName = GenerateFileName(uploadedImageName);
 
@@ -49,12 +46,11 @@ namespace ApiNetCore.Application.Procedures.Files
             return fileName;
         }
 
-        internal string SaveFileFromStream(IFormFile imageUpload, string uploadedImageName)
+        internal string SaveFileFromStream(IFormFile imageUpload)
         {
-            if (!ValidateImage(imageUpload.Length))
-                ShowAlertsException.Throw();
+            ValidateImage(imageUpload.Length);
 
-            var fileName = GenerateFileName(uploadedImageName);
+            var fileName = GenerateFileName(imageUpload.FileName);
 
             var saveFilePath = Path.Combine(imagesFolderPath, fileName);
 

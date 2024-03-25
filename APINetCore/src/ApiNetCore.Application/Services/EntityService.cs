@@ -15,7 +15,7 @@ namespace ApiNetCore.Application.Services
     {
         private readonly IMapper mapper;
         private readonly IEntityRepository<MapDestinationEntityType> repository;
-        
+
         protected readonly IBusinessRules businessRules;
 
         public EntityService(IAlertManager alertManager,
@@ -39,14 +39,7 @@ namespace ApiNetCore.Application.Services
             {
                 var entityModel = MapToModel(entity);
 
-                if (await PassesDuplicityCheck(entityModel))
-                {
-                    await repository.AddAsync(entityModel);
-                }
-                else
-                {
-                    Alert("Duplicity exists!");
-                }
+                await repository.AddAsync(entityModel);
             }
         }
 
@@ -99,7 +92,23 @@ namespace ApiNetCore.Application.Services
 
         protected virtual bool ObjectIsValid(ref MapSourceDtoType entity)
         {
-            return ValidateObject(entity.GetFluentValidator(), entity);
+            var result = ValidateObject(entity.GetFluentValidator(), entity);
+
+            if (result)
+            {
+                var model = MapToModel(entity);
+
+                Task.Run(async () =>
+                {
+                    if (!await PassesDuplicityCheck(model))
+                    {
+                        Alert("Duplicity exists!");
+                        result = false;
+                    }
+                }).Wait();
+            }
+
+            return result;                
         }
 
         protected bool ValidateObject<ValidatorType>(ValidatorType validation, MapSourceDtoType entity) where ValidatorType : AbstractValidator<MapSourceDtoType>

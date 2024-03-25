@@ -41,7 +41,7 @@ namespace ApiNetCore.Application.DTOs.Validations.BusinessRulesValidators
 
         public void ValidateMusicianNickname(ref string? nickname)
         {
-            if (string.IsNullOrEmpty(nickname) && nickname.Length > 21)
+            if (string.IsNullOrEmpty(nickname) && nickname!.Length > 21)
                 Alert("Invalid nickname provided");
 
             nickname = CheckString(nickname);

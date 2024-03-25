@@ -16,9 +16,10 @@ namespace ApiNetCore.Application.DTOs
 
         public string ImageUploadingBase64 { get; set; } = "";
         public string ImageUploadingName { get; set; } = "";
-        
+
         [JsonIgnore]
         public IFormFile? ImageUploadStream { get; set; }
+
         public AbstractValidator<BandDTO> GetFluentValidator()
         {
             return new BandDTOValidation();

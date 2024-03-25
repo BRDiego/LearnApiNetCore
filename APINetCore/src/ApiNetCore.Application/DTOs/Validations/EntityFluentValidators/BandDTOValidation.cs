@@ -17,12 +17,10 @@ namespace ApiNetCore.Application.DTOs.Validations.EntityFluentValidators
             
             RuleFor(b => b.ImageUploadingName)
                 .NotEmpty().When(b => !string.IsNullOrEmpty(b.ImageUploadingBase64))
-                .WithMessage("image name must be filled when sending a base64 image");
-
-            RuleFor(b => b.ImageUploadingName)
-                .Must(name => ImageNameHasExtensionRegex().IsMatch(name))
+                .WithMessage("image name must be filled when sending a base64 image")
+                .Must(name => ImageNameHasExtensionRegex().IsMatch(name)).When(b => !string.IsNullOrEmpty(b.ImageUploadingName))
                 .WithMessage("image extension could not be identified")
-                .Must(name => ValidImageExtensionRegex().IsMatch(name))
+                .Must(name => ValidImageExtensionRegex().IsMatch(name)).When(b => !string.IsNullOrEmpty(b.ImageUploadingName))
                 .WithMessage("only jpg, jpeg and png extensions are allowed");
         }
 

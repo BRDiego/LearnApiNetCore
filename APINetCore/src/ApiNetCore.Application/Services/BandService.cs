@@ -6,6 +6,7 @@ using ApiNetCore.Business.AlertsManagement;
 using ApiNetCore.Business.Models;
 using ApiNetCore.Data.EFContext.Repository.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 
 namespace ApiNetCore.Application.Services
 {
@@ -94,7 +95,7 @@ namespace ApiNetCore.Application.Services
                 else if (band.ImageUploadStream is not null && band.ImageUploadStream.Length > 0)
                 {
                     newImage = true;
-                    band.ImageFileName = proc.SaveFileFromStream(band.ImageUploadStream, band.ImageUploadingName);
+                    band.ImageFileName = proc.SaveFileFromStream(band.ImageUploadStream);
                 }
 
                 if (newImage)
@@ -102,6 +103,27 @@ namespace ApiNetCore.Application.Services
             }
 
             return isValid;
+        }
+
+        public async Task UpdateImageAsync(ushort id, IFormFile imageUpload)
+        {
+            var band = await bandRepository.FindByIdAsync(id);
+
+            if (band is null)
+            {
+                alertManager.AddAlert("could not load register for uploading image");
+                alertManager.CheckAlerts();
+            }
+
+            var proc = ImageProcedures.Create(alertManager);
+
+            var oldImageName = band!.ImageFileName;
+
+            band.ImageFileName = proc.SaveFileFromStream(imageUpload);
+
+            await bandRepository.UpdateAsync(band);
+
+            proc.DeleteImage(oldImageName);
         }
     }
 }

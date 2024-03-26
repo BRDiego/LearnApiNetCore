@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ApiNetCore.Application.DTOs;
 using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
+using ApiNetCore.Application.DTOs.Extensions;
 
 namespace ApiNetCore.Api.Controllers
 {
@@ -93,6 +94,25 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
+        [HttpPost("create-with-image")]
+        public async Task<ActionResult<MusicianDTO>> CreateWithImage(
+            [ModelBinder(BinderType = typeof(MusicianDtoModelBinder))] MusicianImageDTO musicianDtoWithImage)
+        {
+            try
+            {
+                if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+                await musicianService.AddAsync(musicianDtoWithImage);
+
+                return CustomResponse(musicianDtoWithImage);
+            }
+            catch (Exception ex)
+            {
+                AlertException(ex);
+                return CustomResponse();
+            }
+        }
+
         [HttpPut("{id:int}")]
         public async Task<ActionResult<MusicianDTO>> Update(int id, MusicianDTO musicianDTO)
         {
@@ -108,6 +128,23 @@ namespace ApiNetCore.Api.Controllers
                 await musicianService.UpdateAsync(musicianDTO);
 
                 return CustomResponse(musicianDTO);
+            }
+            catch (Exception ex)
+            {
+                AlertException(ex);
+                return CustomResponse();
+            }
+        }
+
+        [HttpPut("{id:int}/updateImage")]
+        public async Task<ActionResult<BandDTO>> UpdateImage(int id, [FromForm] IFormFile imageUpload)
+        {
+            try
+            {
+                var parsedId = (ushort)id;
+                await musicianService.UpdateImageAsync(parsedId, imageUpload);
+
+                return CustomResponse();
             }
             catch (Exception ex)
             {

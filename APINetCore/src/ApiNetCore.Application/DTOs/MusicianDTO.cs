@@ -1,6 +1,8 @@
 using ApiNetCore.Application.DTOs.Interfaces;
 using ApiNetCore.Application.DTOs.Validations.EntityFluentValidators;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json.Serialization;
 
 namespace ApiNetCore.Application.DTOs
 {
@@ -15,6 +17,11 @@ namespace ApiNetCore.Application.DTOs
         
         public List<BandDTO> Bands { get; set; } = new List<BandDTO>();
 
+        public string ImageUploadingBase64 { get; set; } = "";
+        public string ImageUploadingName { get; set; } = "";
+
+        [JsonIgnore]
+        public IFormFile? ImageUploadStream { get; set; }
         public AbstractValidator<MusicianDTO> GetFluentValidator()
         {
             return new MusicianDTOValidation();

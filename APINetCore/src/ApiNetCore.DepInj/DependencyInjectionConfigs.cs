@@ -8,22 +8,31 @@ using ApiNetCore.Data.EFContext;
 using ApiNetCore.Application.DTOs.Validations.BusinessRulesValidators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json.Serialization;
+
 
 namespace ApiNetCore.DependencyInjection;
 
 public static class DependencyInjectionConfigs
 {
-    public static void ConfigureDatabase(ref WebApplicationBuilder builder)
+    public static IServiceCollection ConfigureDatabaseContext(this IServiceCollection services,
+                                                                IConfiguration config)
     {
-        var conString = builder.Configuration.GetConnectionString("SqlServerConnectionString");
 
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        var conString = config.GetConnectionString("SqlServerConnectionString");
+
+        services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(conString);
         });
+        
+        services.AddDbContext<IdentityConfigDbContext>(options =>
+        {
+            options.UseSqlServer(conString);
+        });
+
+        return services;
     }
 
     public static IServiceCollection ConfigureDependencyInjection(this IServiceCollection services)

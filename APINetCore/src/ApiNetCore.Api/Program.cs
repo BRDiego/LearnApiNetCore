@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-DependencyInjectionConfigs.ConfigureDatabase(ref builder);
+builder.Services.ConfigureDatabaseContext(builder.Configuration);
 builder.Services.ConfigureDependencyInjection();
 
 builder.Services.AddControllers();

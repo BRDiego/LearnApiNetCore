@@ -3,6 +3,7 @@ using ApiNetCore.Application.DTOs;
 using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
 using ApiNetCore.Application.DTOs.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiNetCore.Api.Controllers
 {
@@ -18,6 +19,7 @@ namespace ApiNetCore.Api.Controllers
             this.bandService = bandService;
         }
 
+        [AllowAnonymous]
         [HttpGet("")]
         public async Task<ActionResult<IEnumerable<BandDTO>>> List()
         {

@@ -1,10 +1,12 @@
 using ApiNetCore.Application.CustomExceptions;
 using ApiNetCore.Business.AlertsManagement;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ApiNetCore.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     public abstract class MainController : ControllerBase
     {

@@ -132,13 +132,14 @@ namespace ApiNetCore.Api.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return CustomResponse(ModelState);
+
                 if (id != bandDTO.Id)
                 {
                     AlertValidation("the id doesn't match the object provided");
                     return CustomResponse(bandDTO);
                 }
 
-                if (!ModelState.IsValid) return CustomResponse(ModelState);
                 await bandService.UpdateAsync(bandDTO);
 
                 return CustomResponse(bandDTO);

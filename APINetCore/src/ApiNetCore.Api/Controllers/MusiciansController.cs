@@ -118,13 +118,14 @@ namespace ApiNetCore.Api.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return CustomResponse(ModelState);
+
                 if (id != musicianDTO.Id)
                 {
                     AlertValidation("the id doesn't match the object provided");
                     return CustomResponse(musicianDTO);
                 }
 
-                if (!ModelState.IsValid) return CustomResponse(ModelState);
                 await musicianService.UpdateAsync(musicianDTO);
 
                 return CustomResponse(musicianDTO);

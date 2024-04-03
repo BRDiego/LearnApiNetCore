@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace ApiNetCore.Application.DTOs
+namespace ApiNetCore.Application.DTOs.Models
 {
     public abstract class EntityDTO
     {

@@ -1,5 +1,4 @@
-﻿
-namespace ApiNetCore.Application.DTOs.Extensions
+﻿namespace ApiNetCore.Application.DTOs.Authentication
 {
     public class AppHandshakeSettings
     {

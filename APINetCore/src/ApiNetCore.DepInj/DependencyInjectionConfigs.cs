@@ -11,10 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
-using ApiNetCore.Application.DTOs.Extensions;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using ApiNetCore.Application.DTOs.Authentication;
 
 namespace ApiNetCore.DependencyInjection;
 

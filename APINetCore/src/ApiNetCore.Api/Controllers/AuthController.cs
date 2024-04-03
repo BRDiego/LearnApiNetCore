@@ -1,7 +1,6 @@
 ﻿using ApiNetCore.Api.Controllers;
 using ApiNetCore.Application.CustomExceptions;
 using ApiNetCore.Application.DTOs.Authentication;
-using ApiNetCore.Application.DTOs.Extensions;
 using ApiNetCore.Business.AlertsManagement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

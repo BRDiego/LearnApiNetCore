@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using ApiNetCore.Application.DTOs;
+using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Business.Models;
 
 namespace ApiNetCore.Application.Services.Interfaces

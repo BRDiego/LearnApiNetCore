@@ -1,3 +1,4 @@
+using ApiNetCore.Application.DTOs.Models;
 using FluentValidation;
 
 namespace ApiNetCore.Application.DTOs.Validations.EntityFluentValidators

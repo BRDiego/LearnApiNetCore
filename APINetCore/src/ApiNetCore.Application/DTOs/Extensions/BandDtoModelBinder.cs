@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using ApiNetCore.Application.DTOs.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Text.Json;
 
 namespace ApiNetCore.Application.DTOs.Extensions

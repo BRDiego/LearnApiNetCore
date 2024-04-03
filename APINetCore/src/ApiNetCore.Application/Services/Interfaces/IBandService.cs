@@ -1,4 +1,4 @@
-using ApiNetCore.Application.DTOs;
+using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Business.Models;
 using Microsoft.AspNetCore.Http;
 

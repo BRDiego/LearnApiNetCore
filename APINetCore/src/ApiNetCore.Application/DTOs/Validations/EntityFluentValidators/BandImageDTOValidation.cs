@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using ApiNetCore.Application.DTOs.Models;
+using FluentValidation;
 namespace ApiNetCore.Application.DTOs.Validations.EntityFluentValidators
 {
     internal class BandImageDTOValidation : AbstractValidator<BandImageDTO>

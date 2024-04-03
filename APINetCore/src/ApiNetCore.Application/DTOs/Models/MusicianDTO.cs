@@ -4,7 +4,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
 
-namespace ApiNetCore.Application.DTOs
+namespace ApiNetCore.Application.DTOs.Models
 {
     public class MusicianDTO : EntityDTO, IValidDtoEntity<MusicianDTO>
     {
@@ -14,7 +14,7 @@ namespace ApiNetCore.Application.DTOs
         public string PictureFileName { get; set; } = "";
         public string Roles { get; set; } = "";
         public DateTime DateOfBirth { get; set; }
-        
+
         public List<BandDTO> Bands { get; set; } = new List<BandDTO>();
 
         public string ImageUploadingBase64 { get; set; } = "";

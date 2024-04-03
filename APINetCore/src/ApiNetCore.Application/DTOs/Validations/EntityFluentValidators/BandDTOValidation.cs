@@ -1,3 +1,4 @@
+using ApiNetCore.Application.DTOs.Models;
 using FluentValidation;
 using System.Text.RegularExpressions;
 

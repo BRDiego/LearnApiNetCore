@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using ApiNetCore.Application.DTOs;
 using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
 using ApiNetCore.Application.DTOs.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using ApiNetCore.Application.DTOs.Models;
 
 namespace ApiNetCore.Api.Controllers
 {
-    
+
     [Route("api/musicians")]
     public class MusiciansController : MainController
     {

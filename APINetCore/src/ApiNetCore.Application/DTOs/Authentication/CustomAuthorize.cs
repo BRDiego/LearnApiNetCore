@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
 
-namespace ApiNetCore.Application.DTOs.Extensions
+namespace ApiNetCore.Application.DTOs.Authentication
 {
     public class CustomAuthorization
     {

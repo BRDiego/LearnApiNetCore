@@ -1,4 +1,5 @@
 ﻿using ApiNetCore.Api.Controllers;
+using ApiNetCore.Application.CustomExceptions;
 using ApiNetCore.Application.DTOs.Authentication;
 using ApiNetCore.Application.DTOs.Extensions;
 using ApiNetCore.Business.AlertsManagement;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace APINetCore.Api.Controllers
@@ -49,7 +51,7 @@ namespace APINetCore.Api.Controllers
             if (result.Succeeded)
             {
                 await signInManager.SignInAsync(user, false);
-                return CustomResponse(GenerateToken());
+                return CustomResponse(await GenerateToken(registerUser.Email));
             }
             foreach (var error in result.Errors)
             {
@@ -71,7 +73,7 @@ namespace APINetCore.Api.Controllers
                                                                 true);
 
             if (result.Succeeded)
-                return CustomResponse(GenerateToken());
+                return CustomResponse(await GenerateToken(loginUser.Email));
 
             if (result.IsLockedOut)
                 alertManager.AddAlert("user temporarily locked for many attempts");
@@ -82,8 +84,31 @@ namespace APINetCore.Api.Controllers
         }
 
 
-        private string GenerateToken()
+        private async Task<string> GenerateToken(string email)
         {
+            var user = await userManager.FindByEmailAsync(email);
+
+            if (user is null)
+            {
+                alertManager.AddAlert("could not load user for authentication");
+                ShowAlertsException.Throw();
+            }
+
+            var claims = await userManager.GetClaimsAsync(user!);
+            var roles = await userManager.GetRolesAsync(user!);
+
+            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user!.Id));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user!.Email!));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, ConvertToEpochDate(DateTime.Now).ToString()));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Iat, ConvertToEpochDate(DateTime.Now).ToString(), ClaimValueTypes.Integer64));
+
+            foreach (var role in roles)
+                claims.Add(new Claim("role", role));
+
+            var identityClaims = new ClaimsIdentity();
+            identityClaims.AddClaims(claims);
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(appHandshakeSettings.Secret);
 
@@ -92,6 +117,7 @@ namespace APINetCore.Api.Controllers
                 {
                     Issuer = appHandshakeSettings.Sender,
                     Audience = appHandshakeSettings.ValidSpectator,
+                    Subject = identityClaims,
                     Expires = DateTime.UtcNow.AddHours(appHandshakeSettings.HoursToExpire),
                     SigningCredentials = new SigningCredentials(
                                             new SymmetricSecurityKey(key),
@@ -105,5 +131,7 @@ namespace APINetCore.Api.Controllers
             return encodedToken;
         }
 
+        private static long ConvertToEpochDate(DateTime date)
+            => (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
     }
 }

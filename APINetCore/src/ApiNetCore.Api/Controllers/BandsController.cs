@@ -48,7 +48,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-
+        [ClaimsAuthorization("Band","R")]
         [HttpGet("find-by-name")]
         public async Task<ActionResult<BandDTO>> FindByName([FromForm] string? name)
         {
@@ -64,6 +64,7 @@ namespace ApiNetCore.Api.Controllers
         }
 
 
+        [ClaimsAuthorization("Band", "R")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<BandDTO>> FindById(int id)
         {
@@ -81,6 +82,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
+        [ClaimsAuthorization("Band", "R")]
         [HttpGet("{id:int}/members")]
         public async Task<ActionResult<BandDTO>> GetBandWithMembers(int id)
         {
@@ -90,6 +92,7 @@ namespace ApiNetCore.Api.Controllers
             return CustomResponse(band);
         }
 
+        [ClaimsAuthorization("Band", "C")]
         [HttpPost]
         public async Task<ActionResult<BandDTO>> Create(BandDTO bandDTO)
         {
@@ -107,7 +110,8 @@ namespace ApiNetCore.Api.Controllers
                 return CustomResponse();
             }
         }
-        
+
+        [ClaimsAuthorization("Band", "C")]
         [HttpPost("create-with-image")]
         public async Task<ActionResult<BandDTO>> CreateWithImage(
             [ModelBinder(BinderType = typeof(BandDtoModelBinder))] BandImageDTO bandDtoWithImage)
@@ -127,6 +131,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
+        [ClaimsAuthorization("Band", "U")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<BandDTO>> Update(int id, BandDTO bandDTO)
         {
@@ -151,6 +156,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
+        [ClaimsAuthorization("Band", "U")]
         [HttpPut("{id:int}/updateImage")]
         public async Task<ActionResult<BandDTO>> UpdateImage(int id, [FromForm] IFormFile imageUpload)
         {
@@ -168,6 +174,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
+        [ClaimsAuthorization("Band", "D")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<BandDTO>> Delete(int id)
         {

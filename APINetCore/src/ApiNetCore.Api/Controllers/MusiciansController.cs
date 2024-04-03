@@ -51,7 +51,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [ClaimsAuthorization("Band", "R")]
+        [ClaimsAuthorization("Musician", "R")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MusicianDTO>> FindById(int id)
         {
@@ -69,7 +69,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [ClaimsAuthorization("Band", "R")]
+        [ClaimsAuthorization("Musician", "R")]
         [HttpGet("{id:int}/bands")]
         public async Task<ActionResult<MusicianDTO>> GetMusicianWithBands(int id)
         {
@@ -80,7 +80,7 @@ namespace ApiNetCore.Api.Controllers
                 );
         }
 
-        [ClaimsAuthorization("Band", "C")]
+        [ClaimsAuthorization("Musician", "C")]
         [HttpPost]
         public async Task<ActionResult<MusicianDTO>> Create(MusicianDTO musicianDTO)
         {
@@ -99,7 +99,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [ClaimsAuthorization("Band", "C")]
+        [ClaimsAuthorization("Musician", "C")]
         [HttpPost("create-with-image")]
         public async Task<ActionResult<MusicianDTO>> CreateWithImage(
             [ModelBinder(BinderType = typeof(MusicianDtoModelBinder))] MusicianImageDTO musicianDtoWithImage)
@@ -119,7 +119,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [ClaimsAuthorization("Band", "U")]
+        [ClaimsAuthorization("Musician", "U")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<MusicianDTO>> Update(int id, MusicianDTO musicianDTO)
         {
@@ -144,9 +144,9 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [ClaimsAuthorization("Band", "U")]
+        [ClaimsAuthorization("Musician", "U")]
         [HttpPut("{id:int}/updateImage")]
-        public async Task<ActionResult<BandDTO>> UpdateImage(int id, [FromForm] IFormFile imageUpload)
+        public async Task<ActionResult<MusicianDTO>> UpdateImage(int id, [FromForm] IFormFile imageUpload)
         {
             try
             {
@@ -162,7 +162,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [ClaimsAuthorization("Band", "D")]
+        [ClaimsAuthorization("Musician", "D")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<MusicianDTO>> Delete(int id)
         {

@@ -50,7 +50,7 @@ namespace APINetCore.Api.Controllers
             if (result.Succeeded)
             {
                 await signInManager.SignInAsync(user, false);
-                return CustomResponse(await GenerateToken(registerUser.Email));
+                return CustomResponse(await BuildAuthorization(registerUser.Email));
             }
             foreach (var error in result.Errors)
             {
@@ -72,7 +72,7 @@ namespace APINetCore.Api.Controllers
                                                                 true);
 
             if (result.Succeeded)
-                return CustomResponse(await GenerateToken(loginUser.Email));
+                return CustomResponse(await BuildAuthorization(loginUser.Email));
 
             if (result.IsLockedOut)
                 alertManager.AddAlert("user temporarily locked for many attempts");
@@ -83,31 +83,33 @@ namespace APINetCore.Api.Controllers
         }
 
 
-        private async Task<string> GenerateToken(string email)
+        private async Task<UserAuthorizationDTO> BuildAuthorization(string email)
         {
             var user = await userManager.FindByEmailAsync(email);
+            
+            var identityClaims = await GetIdentityClaims(user!);
 
-            if (user is null)
+            string encodedToken = BuildToken(identityClaims);
+
+            var authorization = new UserAuthorizationDTO()
             {
-                alertManager.AddAlert("could not load user for authentication");
-                ShowAlertsException.Throw();
-            }
+                AccessToken = encodedToken,
+                SecondsToExpire = TimeSpan.FromHours(appHandshakeSettings.HoursToExpire).TotalSeconds,
+                UserData = new UserDataDTO()
+                {
+                    Id = user!.Id,
+                    Email = user.Email!,
+                    Claims = identityClaims.Claims.Select(
+                                                    cl => new ClaimDTO() { TypeName = cl.Type, Value = cl.Value}
+                                                    )
+                }
+            };
 
-            var claims = await userManager.GetClaimsAsync(user!);
-            var roles = await userManager.GetRolesAsync(user!);
+            return authorization;
+        }
 
-            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user!.Id));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user!.Email!));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, ConvertToEpochDate(DateTime.Now).ToString()));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Iat, ConvertToEpochDate(DateTime.Now).ToString(), ClaimValueTypes.Integer64));
-
-            foreach (var role in roles)
-                claims.Add(new Claim("role", role));
-
-            var identityClaims = new ClaimsIdentity();
-            identityClaims.AddClaims(claims);
-
+        private string BuildToken(ClaimsIdentity identityClaims)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(appHandshakeSettings.Secret);
 
@@ -125,9 +127,27 @@ namespace APINetCore.Api.Controllers
                 }
             );
 
-            var encodedToken = tokenHandler.WriteToken(token);
+            return tokenHandler.WriteToken(token);
+        }
 
-            return encodedToken;
+        private async Task<ClaimsIdentity> GetIdentityClaims(IdentityUser user)
+        {
+            var claims = await userManager.GetClaimsAsync(user);
+            var roles = await userManager.GetRolesAsync(user);
+
+            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user!.Id));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user!.Email!));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, ConvertToEpochDate(DateTime.Now).ToString()));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Iat, ConvertToEpochDate(DateTime.Now).ToString(), ClaimValueTypes.Integer64));
+
+            foreach (var role in roles)
+                claims.Add(new Claim("role", role));
+
+            var identityClaims = new ClaimsIdentity();
+            identityClaims.AddClaims(claims);
+
+            return identityClaims;
         }
 
         private static long ConvertToEpochDate(DateTime date)

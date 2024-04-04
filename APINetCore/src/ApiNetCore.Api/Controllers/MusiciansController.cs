@@ -4,6 +4,7 @@ using ApiNetCore.Business.AlertsManagement;
 using ApiNetCore.Application.DTOs.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using ApiNetCore.Application.DTOs.Models;
+using ApiNetCore.Application.DTOs.Authentication;
 
 namespace ApiNetCore.Api.Controllers
 {

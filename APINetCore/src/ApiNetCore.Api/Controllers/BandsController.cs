@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Authorization;
 using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Application.DTOs.Authentication;
 using ApiNetCore.Business.Interfaces;
+using Microsoft.AspNetCore.Cors;
 
 namespace ApiNetCore.Api.Controllers
 {
     [Route("api/bands")]
+    //[DisableCors]
     public class BandsController : MainController
     {
         private readonly IBandService bandService;
@@ -37,6 +39,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
+        //[EnableCors("Development")]
         [HttpGet("list-by-musician-age")]
         public async Task<ActionResult<IEnumerable<BandDTO>>> ListByMusiciansAge([FromForm] int? minimumMusicianAge, [FromForm] int? maximumMusicianAge)
         {

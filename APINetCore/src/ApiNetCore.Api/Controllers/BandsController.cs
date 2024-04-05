@@ -5,6 +5,7 @@ using ApiNetCore.Application.DTOs.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Application.DTOs.Authentication;
+using ApiNetCore.Business.Interfaces;
 
 namespace ApiNetCore.Api.Controllers
 {
@@ -14,8 +15,9 @@ namespace ApiNetCore.Api.Controllers
         private readonly IBandService bandService;
 
         public BandsController(IBandService bandService,
-                                      IAlertManager alertManager)
-                                      : base(alertManager)
+                                 IAlertManager alertManager,
+                                 IUser user)
+                                : base(alertManager, user)
         {
             this.bandService = bandService;
         }
@@ -49,7 +51,7 @@ namespace ApiNetCore.Api.Controllers
             }
         }
 
-        [ClaimsAuthorization("Band","R")]
+        [ClaimsAuthorization("Band", "R")]
         [HttpGet("find-by-name")]
         public async Task<ActionResult<BandDTO>> FindByName([FromForm] string? name)
         {
@@ -87,9 +89,12 @@ namespace ApiNetCore.Api.Controllers
         [HttpGet("{id:int}/members")]
         public async Task<ActionResult<BandDTO>> GetBandWithMembers(int id)
         {
+
+            var user = User.Identity.Name;
+            var u2 = ApiUser;
             var parsedId = (ushort)id;
             var band = await bandService.GetBandWithMembers(parsedId);
-            
+
             return CustomResponse(band);
         }
 

@@ -15,6 +15,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ApiNetCore.Application.DTOs.Authentication;
+using Microsoft.AspNetCore.Http;
+using ApiNetCore.Business.Interfaces;
+using ApiNetCore.Application.Extensions;
 
 namespace ApiNetCore.DependencyInjection;
 
@@ -83,6 +86,10 @@ public static class DependencyInjectionConfigs
         services.AddScoped<IMusicianService, MusicianService>();
 
         services.AddScoped<IBusinessRules, BusinessRulesValidator>();
+
+        services.AddScoped<IUser, ApiUser>();
+
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
         services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 

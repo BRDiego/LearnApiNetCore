@@ -5,6 +5,7 @@ using ApiNetCore.Application.DTOs.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Application.DTOs.Authentication;
+using ApiNetCore.Business.Interfaces;
 
 namespace ApiNetCore.Api.Controllers
 {
@@ -15,8 +16,9 @@ namespace ApiNetCore.Api.Controllers
         private readonly IMusicianService musicianService;
 
         public MusiciansController(IMusicianService musicianService,
-                                      IAlertManager alertManager)
-                                      : base(alertManager)
+                                    IAlertManager alertManager,
+                                    IUser user)
+                                    : base(alertManager, user)
         {
             this.musicianService = musicianService;
         }

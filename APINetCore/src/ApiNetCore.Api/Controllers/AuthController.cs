@@ -2,6 +2,7 @@
 using ApiNetCore.Application.CustomExceptions;
 using ApiNetCore.Application.DTOs.Authentication;
 using ApiNetCore.Business.AlertsManagement;
+using ApiNetCore.Business.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,8 +25,9 @@ namespace APINetCore.Api.Controllers
         public AuthController(IAlertManager alertManager,
                             SignInManager<IdentityUser> signInManager,
                             UserManager<IdentityUser> userManager,
-                            IOptions<AppHandshakeSettings> appHandshakeSettingsOptions)
-                            : base(alertManager)
+                            IOptions<AppHandshakeSettings> appHandshakeSettingsOptions,
+                            IUser user)
+                            : base(alertManager, user)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;

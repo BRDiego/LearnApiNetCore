@@ -3,6 +3,7 @@ using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Application.Procedures.Files;
 using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
+using ApiNetCore.Business.Interfaces;
 using ApiNetCore.Business.Models;
 using ApiNetCore.Data.EFContext.Repository.Interfaces;
 using AutoMapper;
@@ -13,18 +14,22 @@ namespace ApiNetCore.Application.Services
     public class BandService : EntityService<BandDTO, Band>, IBandService
     {
         private readonly IBandRepository bandRepository;
+        private readonly IUser user;
 
         public BandService(IBandRepository bandRepository,
                             IAlertManager alertManager,
                             IMapper mapper,
-                            IBusinessRules businessRules)
+                            IBusinessRules businessRules,
+                            IUser user)
                             : base(alertManager, mapper, bandRepository, businessRules)
         {
             this.bandRepository = bandRepository;
+            this.user = user;
         }
 
         public async Task<BandDTO> GetBandWithMembers(ushort id)
         {
+            var lastUserInterested = user.Name;
             return MapToDto(await bandRepository.GetBandWithMembers(id));
         }
 

@@ -1,5 +1,6 @@
 using ApiNetCore.Application.CustomExceptions;
 using ApiNetCore.Business.AlertsManagement;
+using ApiNetCore.Business.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -11,10 +12,13 @@ namespace ApiNetCore.Api.Controllers
     public abstract class MainController : ControllerBase
     {
         protected readonly IAlertManager alertManager;
+        public readonly IUser ApiUser;
 
-        protected MainController(IAlertManager alertManager)
+        protected MainController(IAlertManager alertManager,
+                                IUser user)
         {
             this.alertManager = alertManager;
+            this.ApiUser = user;
         }
 
         protected bool IsValidOperation()

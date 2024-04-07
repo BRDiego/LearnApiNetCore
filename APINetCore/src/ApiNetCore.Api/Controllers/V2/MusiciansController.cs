@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Application.DTOs.Authentication;
 using ApiNetCore.Business.Interfaces;
+using ApiNetCore.Api.Controllers;
+using Asp.Versioning;
 
-namespace ApiNetCore.Api.Controllers
+namespace APINetCore.Api.Controllers.V2
 {
-
-    [Route("api/musicians")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/musicians")]
     public class MusiciansController : MainController
     {
         private readonly IMusicianService musicianService;
@@ -39,7 +41,7 @@ namespace ApiNetCore.Api.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<MusicianDTO>>> Search([FromForm] int? musicianAge,[FromForm] string? surname,[FromForm] string? nickname)
+        public async Task<ActionResult<IEnumerable<MusicianDTO>>> Search([FromForm] int? musicianAge, [FromForm] string? surname, [FromForm] string? nickname)
         {
             try
             {

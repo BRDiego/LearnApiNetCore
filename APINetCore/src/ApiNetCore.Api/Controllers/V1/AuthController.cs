@@ -1,8 +1,8 @@
 ﻿using ApiNetCore.Api.Controllers;
-using ApiNetCore.Application.CustomExceptions;
 using ApiNetCore.Application.DTOs.Authentication;
 using ApiNetCore.Business.AlertsManagement;
 using ApiNetCore.Business.Interfaces;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +12,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace APINetCore.Api.Controllers
+namespace APINetCore.Api.Controllers.V1
 {
     [AllowAnonymous]
-    [Route("api")]
+    [ApiVersion("1.0", Deprecated = true)]
+    [Route("api/v{version:apiVersion}")]
     public class AuthController : MainController
     {
         private readonly SignInManager<IdentityUser> signInManager;
@@ -31,7 +32,7 @@ namespace APINetCore.Api.Controllers
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
-            this.appHandshakeSettings = appHandshakeSettingsOptions.Value;
+            appHandshakeSettings = appHandshakeSettingsOptions.Value;
         }
 
         [HttpPost("register")]
@@ -88,7 +89,7 @@ namespace APINetCore.Api.Controllers
         private async Task<UserAuthorizationDTO> BuildAuthorization(string email)
         {
             var user = await userManager.FindByEmailAsync(email);
-            
+
             var identityClaims = await GetIdentityClaims(user!);
 
             string encodedToken = BuildToken(identityClaims);
@@ -102,7 +103,7 @@ namespace APINetCore.Api.Controllers
                     Id = user!.Id,
                     Email = user.Email!,
                     Claims = identityClaims.Claims.Select(
-                                                    cl => new ClaimDTO() { TypeName = cl.Type, Value = cl.Value}
+                                                    cl => new ClaimDTO() { TypeName = cl.Type, Value = cl.Value }
                                                     )
                 }
             };

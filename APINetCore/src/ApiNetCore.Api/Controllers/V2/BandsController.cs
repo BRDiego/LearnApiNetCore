@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Application.DTOs.Authentication;
 using ApiNetCore.Business.Interfaces;
-using Microsoft.AspNetCore.Cors;
+using ApiNetCore.Api.Controllers;
+using Asp.Versioning;
 
-namespace ApiNetCore.Api.Controllers
+namespace APINetCore.Api.Controllers.V2
 {
-    [Route("api/bands")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/bands")]
     //[DisableCors]
     public class BandsController : MainController
     {
@@ -93,7 +95,7 @@ namespace ApiNetCore.Api.Controllers
         public async Task<ActionResult<BandDTO>> GetBandWithMembers(int id)
         {
 
-            var user = User.Identity.Name;
+            var user = User.Identity!.Name;
             var u2 = ApiUser;
             var parsedId = (ushort)id;
             var band = await bandService.GetBandWithMembers(parsedId);

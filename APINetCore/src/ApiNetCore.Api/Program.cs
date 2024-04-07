@@ -1,4 +1,7 @@
 using ApiNetCore.DependencyInjection;
+using APINetCore.Api.Configuration;
+using Asp.Versioning.ApiExplorer;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureDatabaseContext(builder.Configuration);
 builder.Services.ConfigureDependencyInjection();
+
+builder.Services.ConfigureApi();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

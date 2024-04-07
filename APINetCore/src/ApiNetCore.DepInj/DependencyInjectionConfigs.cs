@@ -6,19 +6,18 @@ using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Application.DTOs.Interfaces;
 using ApiNetCore.Data.EFContext;
 using ApiNetCore.Application.DTOs.Validations.BusinessRulesValidators;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Identity;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using ApiNetCore.Application.DTOs.Authentication;
-using Microsoft.AspNetCore.Http;
 using ApiNetCore.Business.Interfaces;
 using ApiNetCore.Application.Extensions;
-using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ApiNetCore.DependencyInjection;
 
@@ -93,34 +92,6 @@ public static class DependencyInjectionConfigs
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
         services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
-        return services;
-    }
-
-    public static IServiceCollection ConfigureApi(this IServiceCollection services)
-    {
-
-        //Cors is not implemented for lots of apps. Browsers do. Apps or services like postman may not do so.
-        services.AddCors(options =>
-        {
-            options.AddPolicy("Development", builder =>
-            {
-                builder.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials(); //this one is not that safe, since it's easy to simulate credentials
-            });
-
-            options.AddPolicy("Production", builder =>
-            {
-                builder
-                .WithMethods("GET", "PUT")
-                .WithOrigins("https://mywebsite.domain", "https://another.domain")
-                .SetIsOriginAllowedToAllowWildcardSubdomains() //allow origins subdomains
-                //.WithHeaders(HeaderNames.ContentType, "application/json") restricting the ones above is good enough
-                .AllowAnyHeader();
-            });
-        });
 
         return services;
     }

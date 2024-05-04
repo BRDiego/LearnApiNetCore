@@ -1,4 +1,5 @@
 using ApiNetCore.Application.DTOs.Interfaces;
+using ApiNetCore.Application.DTOs.MappingConfig;
 using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Application.Procedures.Files;
 using ApiNetCore.Application.Services.Interfaces;
@@ -18,14 +19,9 @@ namespace ApiNetCore.Application.Services
                             IAlertManager alertManager,
                             IMapper mapper,
                             IBusinessRules businessRules)
-                            : base(alertManager, mapper, musicianRepository, businessRules)
+                            : base(alertManager, musicianRepository, mapper, businessRules)
         {
             this.musicianRepository = musicianRepository;
-        }
-
-        public async Task<MusicianDTO> GetMusicianWithBands(ushort id)
-        {
-            return MapToDto(await musicianRepository.GetMusicianWithBands(id));
         }
 
         public async Task<IEnumerable<MusicianDTO>> SearchAsync(int? musicianAge, string? surname, string? nickname)
@@ -43,7 +39,7 @@ namespace ApiNetCore.Application.Services
             possibleYearsOfBirth.Add(yearOfBirth - 1);
 
             return MapToDto(await musicianRepository.ListAsync(m =>
-                    
+
                     musicianAge > 0 ? possibleYearsOfBirth.Contains(m.DateOfBirth.Year) : true
                     &&
                     m.Surnames.Contains(surname!)

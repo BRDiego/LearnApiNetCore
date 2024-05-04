@@ -1,4 +1,6 @@
+using ApiNetCore.Application.DTOs.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
+using AutoMapper;
 
 namespace ApiNetCore.Application.Services
 {

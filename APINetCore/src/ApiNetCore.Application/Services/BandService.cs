@@ -1,4 +1,5 @@
 using ApiNetCore.Application.DTOs.Interfaces;
+using ApiNetCore.Application.DTOs.MappingConfig;
 using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Application.Procedures.Files;
 using ApiNetCore.Application.Services.Interfaces;
@@ -18,47 +19,13 @@ namespace ApiNetCore.Application.Services
 
         public BandService(IBandRepository bandRepository,
                             IAlertManager alertManager,
-                            IMapper mapper,
                             IBusinessRules businessRules,
+                            IMapper autoMapper,
                             IUser user)
-                            : base(alertManager, mapper, bandRepository, businessRules)
+                            : base(alertManager, bandRepository, autoMapper, businessRules)
         {
             this.bandRepository = bandRepository;
             this.user = user;
-        }
-
-        public async Task<BandDTO> GetBandWithMembers(ushort id)
-        {
-            var lastUserInterested = user.Name;
-            return MapToDto(await bandRepository.GetBandWithMembers(id));
-        }
-
-        public async Task<IEnumerable<BandDTO>> ListByMusiciansAgeAsync(int? minimumMusicianAge, int? maximumMusicianAge)
-        {
-
-            businessRules.ValidateMusicianAge(ref minimumMusicianAge);
-            businessRules.ValidateMusicianAge(ref maximumMusicianAge);
-
-            alertManager.CheckAlerts();
-
-            var minBirthYear = DateTime.Now.Year - minimumMusicianAge;
-            var maxBirthYear = DateTime.Now.Year - maximumMusicianAge;
-
-            IEnumerable<Band> result;
-
-            if (minimumMusicianAge > 0 && maximumMusicianAge > 0)
-                result = await bandRepository.ListAsync(
-                    b => b.Musicians.Any(mus => mus.DateOfBirth.Year >= minBirthYear && mus.DateOfBirth.Year <= maxBirthYear));
-            else if (minimumMusicianAge > 0)
-                result = await bandRepository.ListAsync(
-                    b => b.Musicians.Any(mus => mus.DateOfBirth.Year >= minBirthYear));
-            else if (maximumMusicianAge > 0)
-                result = await bandRepository.ListAsync(
-                    b => b.Musicians.Any(mus => mus.DateOfBirth.Year <= maxBirthYear));
-            else
-                result = await bandRepository.ListAsync();
-
-            return MapToDto(result);
         }
 
         public async Task<BandDTO?> FindByNameAsync(string? name)

@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
+using ApiNetCore.Application.DTOs.MappingConfig;
 
 namespace ApiNetCore.DependencyInjection;
 
@@ -83,7 +84,12 @@ public static class DependencyInjectionConfigs
         services.AddScoped<IAlertManager, AlertManager>();
 
         services.AddScoped<IBandService, BandService>();
+        services.AddScoped< IBandMembersService, BandMembersService>();
+        services.AddScoped<IBandMembersMapper, BandMembersMapper>();
+
         services.AddScoped<IMusicianService, MusicianService>();
+        services.AddScoped< IMusicianMembershipsService, MusicianMembershipsService>();
+        services.AddScoped< IMusicianMembershipsMapper, MusicianMembershipMapper>();
 
         services.AddScoped<IBusinessRules, BusinessRulesValidator>();
 

@@ -16,13 +16,16 @@ namespace APINetCore.Api.Controllers.V2
     public class MusiciansController : MainController
     {
         private readonly IMusicianService musicianService;
+        private readonly IMusicianMembershipsService membershipService;
 
         public MusiciansController(IMusicianService musicianService,
                                     IAlertManager alertManager,
+                                    IMusicianMembershipsService membershipService,
                                     IUser user)
                                     : base(alertManager, user)
         {
             this.musicianService = musicianService;
+            this.membershipService = membershipService;
         }
 
         [AllowAnonymous]
@@ -76,12 +79,12 @@ namespace APINetCore.Api.Controllers.V2
 
         [ClaimsAuthorization("Musician", "R")]
         [HttpGet("{id:int}/bands")]
-        public async Task<ActionResult<MusicianDTO>> GetMusicianWithBands(int id)
+        public async Task<ActionResult<MusicianMembershipsDTO>> GetMusicianWithBands(int id)
         {
             var parsedId = (ushort)id;
 
             return CustomResponse(
-                await musicianService.GetMusicianWithBands(parsedId)
+                await membershipService.GetMusicianWithBands(parsedId)
                 );
         }
 

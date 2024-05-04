@@ -17,13 +17,16 @@ namespace APINetCore.Api.Controllers.V2
     public class BandsController : MainController
     {
         private readonly IBandService bandService;
+        private readonly IBandMembersService bandMembersService;
 
         public BandsController(IBandService bandService,
                                  IAlertManager alertManager,
+                                 IBandMembersService bandMembersService,
                                  IUser user)
                                 : base(alertManager, user)
         {
             this.bandService = bandService;
+            this.bandMembersService = bandMembersService;
         }
 
         [AllowAnonymous]
@@ -43,11 +46,11 @@ namespace APINetCore.Api.Controllers.V2
 
         //[EnableCors("Development")]
         [HttpGet("list-by-musician-age")]
-        public async Task<ActionResult<IEnumerable<BandDTO>>> ListByMusiciansAge([FromForm] int? minimumMusicianAge, [FromForm] int? maximumMusicianAge)
+        public async Task<ActionResult<IEnumerable<BandMembersDTO>>> ListByMusiciansAge([FromForm] int? minimumMusicianAge, [FromForm] int? maximumMusicianAge)
         {
             try
             {
-                return CustomResponse(await bandService.ListByMusiciansAgeAsync(minimumMusicianAge, maximumMusicianAge));
+                return CustomResponse(await bandMembersService.ListByMusiciansAgeAsync(minimumMusicianAge, maximumMusicianAge));
             }
             catch (Exception ex)
             {
@@ -92,13 +95,10 @@ namespace APINetCore.Api.Controllers.V2
 
         [ClaimsAuthorization("Band", "R")]
         [HttpGet("{id:int}/members")]
-        public async Task<ActionResult<BandDTO>> GetBandWithMembers(int id)
+        public async Task<ActionResult<BandMembersDTO>> GetBandWithMembers(int id)
         {
-
-            var user = User.Identity!.Name;
-            var u2 = ApiUser;
             var parsedId = (ushort)id;
-            var band = await bandService.GetBandWithMembers(parsedId);
+            var band = await bandMembersService.GetBandWithMembers(parsedId);
 
             return CustomResponse(band);
         }

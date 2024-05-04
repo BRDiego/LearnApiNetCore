@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ApiNetCore.Business.Models
+namespace ApiNetCore.Business.Models.Generic
 {
     public abstract class Entity
     {

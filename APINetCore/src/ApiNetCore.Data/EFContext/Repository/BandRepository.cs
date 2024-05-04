@@ -8,11 +8,35 @@ namespace ApiNetCore.Data.EFContext.Repository
     {
         public BandRepository(ApplicationDbContext context) : base(context)  { }
 
-        public async Task<Band?> GetBandWithMembers(ushort id)
+        public async Task<BandMembers> GetBandWithMembers(ushort id)
         {
-            return await dbContext.Band.AsNoTracking()
-                                        .Include("Musicians")
-                                        .FirstOrDefaultAsync(b => b.Id == id);
+            var band = await dbContext.Band.AsNoTracking()
+                                        .FirstAsync(b => b.Id == id);
+
+            var members = await dbContext.BandMusician.AsNoTracking().Where(junction => junction.BandId == id).ToListAsync();
+
+            return new BandMembers()
+            {
+                Band = band,
+                Members = members.Select(m => m.Musician).ToList()
+            };
+        }
+        public async Task<IEnumerable<BandMembers>> ListByMembersDataAsync(DateTime maxBirthDate, DateTime minBirthDate)
+        {
+            var members = await dbContext.BandMusician.AsNoTracking()
+                                                        .Where(junction => junction.Musician.DateOfBirth >= minBirthDate && junction.Musician.DateOfBirth <= maxBirthDate)
+                                                        .Include(b => b.Band)
+                                                        .ToListAsync();
+
+            if (members is null || members.Count == 0)
+                return Enumerable.Empty<BandMembers>();
+
+            var bandsList = members.DistinctBy(item => item.BandId).Select(r => new BandMembers() { Band = r.Band }).ToList();
+
+            foreach (var band in bandsList)
+                band.Members = members.Where(item => item.BandId == band.Band.Id).Select(item => item.Musician).ToList();
+
+            return bandsList;
         }
     }
 }

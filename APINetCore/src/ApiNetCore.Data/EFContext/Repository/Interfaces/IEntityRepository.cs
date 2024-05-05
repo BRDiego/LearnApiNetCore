@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using ApiNetCore.Business.Models;
+using ApiNetCore.Business.Models.Generic;
 
 namespace ApiNetCore.Data.EFContext.Repository.Interfaces
 {

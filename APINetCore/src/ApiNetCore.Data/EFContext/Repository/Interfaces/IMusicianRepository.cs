@@ -5,6 +5,6 @@ namespace ApiNetCore.Data.EFContext.Repository.Interfaces
 {
     public interface IMusicianRepository : IEntityRepository<Musician>
     {
-        public Task<Musician?> GetMusicianWithBands(ushort id);
+        public Task<MusicianMemberships> GetMusicianWithBands(ushort id);
     }
 }

@@ -5,6 +5,7 @@ namespace ApiNetCore.Data.EFContext.Repository.Interfaces
 {
     public interface IBandRepository : IEntityRepository<Band>
     {
-        public Task<Band?> GetBandWithMembers(ushort id);
+        public Task<BandMembers> GetBandWithMembers(ushort id);
+        public Task<IEnumerable<BandMembers>> ListByMembersDataAsync(DateTime maxBirthDate, DateTime minBirthDate);
     }
 }

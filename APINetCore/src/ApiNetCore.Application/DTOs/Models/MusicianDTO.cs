@@ -15,8 +15,6 @@ namespace ApiNetCore.Application.DTOs.Models
         public string Roles { get; set; } = "";
         public DateTime DateOfBirth { get; set; }
 
-        public List<BandDTO> Bands { get; set; } = new List<BandDTO>();
-
         public string ImageUploadingBase64 { get; set; } = "";
         public string ImageUploadingName { get; set; } = "";
 

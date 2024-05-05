@@ -15,7 +15,7 @@ using System.Text;
 namespace APINetCore.Api.Controllers.V1
 {
     [AllowAnonymous]
-    [ApiVersion("1.0", Deprecated = true)]
+    [ApiVersion(1.0, status: "DISABLED", Deprecated = true)]
     [Route("api/v{version:apiVersion}")]
     public class AuthController : MainController
     {

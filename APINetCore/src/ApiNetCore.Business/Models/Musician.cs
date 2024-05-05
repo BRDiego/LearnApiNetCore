@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ApiNetCore.Business.Models.Generic;
 
 namespace ApiNetCore.Business.Models
 {
@@ -25,7 +26,6 @@ namespace ApiNetCore.Business.Models
         [Required]
         [Column(TypeName = "Date")]
         public DateTime DateOfBirth { get; set; }
-        public List<Band> Bands { get; set; } = new List<Band>();
 
         public ushort Age {
             get 

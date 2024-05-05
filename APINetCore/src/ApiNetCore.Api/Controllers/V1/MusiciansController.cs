@@ -11,7 +11,7 @@ using Asp.Versioning;
 
 namespace APINetCore.Api.Controllers.V1
 {
-    [ApiVersion("1.0", Deprecated = true)]
+    [ApiVersion(1.0, status: "DISABLED", Deprecated = true)]
     [Route("api/v{version:apiVersion}/musicians")]
     public class MusiciansController : MainController
     {
@@ -72,17 +72,6 @@ namespace APINetCore.Api.Controllers.V1
                 AlertException(ex);
                 return CustomResponse();
             }
-        }
-
-        [ClaimsAuthorization("Musician", "R")]
-        [HttpGet("{id:int}/bands")]
-        public async Task<ActionResult<MusicianDTO>> GetMusicianWithBands(int id)
-        {
-            var parsedId = (ushort)id;
-
-            return CustomResponse(
-                await musicianService.GetMusicianWithBands(parsedId)
-                );
         }
 
         [ClaimsAuthorization("Musician", "C")]

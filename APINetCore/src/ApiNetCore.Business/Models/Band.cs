@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ApiNetCore.Business.Models.Generic;
 
 namespace ApiNetCore.Business.Models
 {
@@ -16,7 +17,6 @@ namespace ApiNetCore.Business.Models
 
         [MaxLength(100)]
         public string ImageFileName { get; set; } = "";
-        public List<Musician> Musicians { get; set; } = new List<Musician>();
 
         public override bool Equals(object? obj)
         {

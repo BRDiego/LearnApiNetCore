@@ -1,7 +1,8 @@
 using ApiNetCore.Data.EFContext.Repository.Interfaces;
-using ApiNetCore.Business.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using ApiNetCore.Business.Models.Generic;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ApiNetCore.Data.EFContext.Repository
 {

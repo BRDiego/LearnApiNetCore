@@ -3,7 +3,7 @@ using ApiNetCore.Application.DTOs.Interfaces;
 using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;
-using ApiNetCore.Business.Models;
+using ApiNetCore.Business.Models.Generic;
 using ApiNetCore.Data.EFContext.Repository.Interfaces;
 using AutoMapper;
 using FluentValidation;
@@ -11,21 +11,21 @@ using FluentValidation.Results;
 
 namespace ApiNetCore.Application.Services
 {
-    public abstract class EntityService<MapSourceDtoType, MapDestinationEntityType> : BaseService, IEntityService<MapSourceDtoType, MapDestinationEntityType> where MapDestinationEntityType : Entity where MapSourceDtoType : EntityDTO, IValidDtoEntity<MapSourceDtoType>
+    public abstract class EntityService<TDto, TEntity> : BaseService, IEntityService<TDto, TEntity> where TEntity : Entity where TDto : EntityDTO, IValidDtoEntity<TDto>
     {
-        private readonly IMapper mapper;
-        private readonly IEntityRepository<MapDestinationEntityType> repository;
+        private readonly IMapper autoMapper;
+        private readonly IEntityRepository<TEntity> repository;
 
         protected readonly IBusinessRules businessRules;
 
         public EntityService(IAlertManager alertManager,
+                                 IEntityRepository<TEntity> repository,
                                  IMapper mapper,
-                                 IEntityRepository<MapDestinationEntityType> repository,
                                  IBusinessRules businessRules) : base(alertManager)
         {
-            this.mapper = mapper;
             this.repository = repository;
             this.businessRules = businessRules;
+            this.autoMapper = mapper;
         }
 
         public void Dispose()
@@ -33,23 +33,23 @@ namespace ApiNetCore.Application.Services
             repository?.Dispose();
         }
 
-        public async Task AddAsync(MapSourceDtoType entity)
+        public async Task AddAsync(TDto entity)
         {
             if (ObjectIsValid(ref entity))
             {
-                var entityModel = MapToModel(entity);
+                var entityModel = MapToEntity(entity);
 
                 await repository.AddAsync(entityModel);
             }
         }
 
-        protected abstract Task<bool> PassesDuplicityCheck(MapDestinationEntityType entityModel);
+        protected abstract Task<bool> PassesDuplicityCheck(TEntity entityModel);
 
-        public async Task UpdateAsync(MapSourceDtoType entity)
+        public async Task UpdateAsync(TDto entity)
         {
             if (ObjectIsValid(ref entity))
             {
-                await repository.UpdateAsync(MapToModel(entity));
+                await repository.UpdateAsync(MapToEntity(entity));
             }
         }
 
@@ -58,21 +58,21 @@ namespace ApiNetCore.Application.Services
             await repository.DeleteAsync(id);
         }
 
-        public async Task<MapSourceDtoType?> FindByIdAsync(ushort id)
+        public async Task<TDto?> FindByIdAsync(ushort id)
         {
             return MapToDto(
                 await repository.FindByIdAsync(id)
             );
         }
 
-        public async Task<IEnumerable<MapSourceDtoType>> ListAsync()
+        public async Task<IEnumerable<TDto>> ListAsync()
         {
             return MapToDto(
                 await repository.ListAsync()
             );
         }
 
-        public async Task<IEnumerable<MapSourceDtoType>> ListAsync(Expression<Func<MapDestinationEntityType, bool>> predicate)
+        public async Task<IEnumerable<TDto>> ListAsync(Expression<Func<TEntity, bool>> predicate)
         {
             return MapToDto(
                 await repository.ListAsync(predicate)
@@ -90,13 +90,13 @@ namespace ApiNetCore.Application.Services
                 Alert(error.ErrorMessage);
         }
 
-        protected virtual bool ObjectIsValid(ref MapSourceDtoType entity)
+        protected virtual bool ObjectIsValid(ref TDto entity)
         {
             var result = ValidateObject(entity.GetFluentValidator(), entity);
 
             if (result)
             {
-                var model = MapToModel(entity);
+                var model = MapToEntity(entity);
 
                 Task.Run(async () =>
                 {
@@ -111,7 +111,7 @@ namespace ApiNetCore.Application.Services
             return result;                
         }
 
-        protected bool ValidateObject<ValidatorType>(ValidatorType validation, MapSourceDtoType entity) where ValidatorType : AbstractValidator<MapSourceDtoType>
+        protected bool ValidateObject<ValidatorType>(ValidatorType validation, TDto entity) where ValidatorType : AbstractValidator<TDto>
         {
             var validationResult = validation.Validate(entity);
 
@@ -122,19 +122,19 @@ namespace ApiNetCore.Application.Services
             return false;
         }
 
-        protected MapDestinationEntityType MapToModel(MapSourceDtoType entityDTO)
+        protected TEntity MapToEntity(TDto entityDTO)
         {
-            return mapper.Map<MapDestinationEntityType>(entityDTO);
+            return autoMapper.Map<TEntity>(entityDTO);
         }
 
-        protected MapSourceDtoType MapToDto(MapDestinationEntityType? entity)
+        protected TDto MapToDto(TEntity? entity)
         {
-            return mapper.Map<MapSourceDtoType>(entity);
+            return autoMapper.Map<TDto>(entity);
         }
 
-        protected IEnumerable<MapSourceDtoType> MapToDto(IEnumerable<MapDestinationEntityType> entity)
+        protected IEnumerable<TDto> MapToDto(IEnumerable<TEntity> entity)
         {
-            return mapper.Map<IEnumerable<MapSourceDtoType>>(entity);
+            return autoMapper.Map<IEnumerable<TDto>>(entity);
         }
     }
 

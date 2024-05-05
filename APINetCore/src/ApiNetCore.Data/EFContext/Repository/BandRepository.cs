@@ -13,7 +13,10 @@ namespace ApiNetCore.Data.EFContext.Repository
             var band = await dbContext.Band.AsNoTracking()
                                         .FirstAsync(b => b.Id == id);
 
-            var members = await dbContext.BandMusician.AsNoTracking().Where(junction => junction.BandId == id).ToListAsync();
+            var members = await dbContext.BandMusician.AsNoTracking()
+                                                        .Where(junction => junction.BandId == id)
+                                                        .Include(junction => junction.Musician)
+                                                        .ToListAsync();
 
             return new BandMembers()
             {
@@ -26,6 +29,7 @@ namespace ApiNetCore.Data.EFContext.Repository
             var members = await dbContext.BandMusician.AsNoTracking()
                                                         .Where(junction => junction.Musician.DateOfBirth >= minBirthDate && junction.Musician.DateOfBirth <= maxBirthDate)
                                                         .Include(b => b.Band)
+                                                        .Include(m => m.Musician)
                                                         .ToListAsync();
 
             if (members is null || members.Count == 0)

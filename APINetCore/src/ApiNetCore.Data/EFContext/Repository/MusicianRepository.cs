@@ -14,7 +14,10 @@ namespace ApiNetCore.Data.EFContext.Repository
                                         .Where(m => m.Id == id)
                                         .FirstAsync();
 
-            var memberships = await dbContext.BandMusician.AsNoTracking().Where(junction => junction.MusicianId == id).ToListAsync();
+            var memberships = await dbContext.BandMusician.AsNoTracking()
+                                                            .Where(junction => junction.MusicianId == id)
+                                                            .Include(junction => junction.Band)
+                                                            .ToListAsync();
 
             return new MusicianMemberships()
             {

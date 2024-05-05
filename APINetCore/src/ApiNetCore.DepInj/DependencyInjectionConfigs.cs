@@ -18,7 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
-using ApiNetCore.Application.DTOs.MappingConfig;
+using ApiNetCore.Application.Configurations.MappingConfig;
 
 namespace ApiNetCore.DependencyInjection;
 

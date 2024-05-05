@@ -77,7 +77,7 @@ namespace APINetCore.Api.Controllers.V2
             }
         }
 
-        [ClaimsAuthorization("Musician", "R")]
+        //[ClaimsAuthorization("Musician", "R")]
         [HttpGet("{id:int}/bands")]
         public async Task<ActionResult<MusicianMembershipsDTO>> GetMusicianWithBands(int id)
         {

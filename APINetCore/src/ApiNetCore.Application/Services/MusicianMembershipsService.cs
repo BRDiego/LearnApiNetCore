@@ -1,5 +1,5 @@
-﻿using ApiNetCore.Application.DTOs.Interfaces;
-using ApiNetCore.Application.DTOs.MappingConfig;
+﻿using ApiNetCore.Application.Configurations.MappingConfig;
+using ApiNetCore.Application.DTOs.Interfaces;
 using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Application.Services.Interfaces;
 using ApiNetCore.Business.AlertsManagement;

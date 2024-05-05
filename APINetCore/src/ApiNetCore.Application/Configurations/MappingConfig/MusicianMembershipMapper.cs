@@ -2,7 +2,7 @@
 using ApiNetCore.Business.Models;
 using AutoMapper;
 
-namespace ApiNetCore.Application.DTOs.MappingConfig
+namespace ApiNetCore.Application.Configurations.MappingConfig
 {
     public class MusicianMembershipMapper : IMusicianMembershipsMapper
     {
@@ -12,13 +12,15 @@ namespace ApiNetCore.Application.DTOs.MappingConfig
         {
             customMapper = new Mapper(
                 new MapperConfiguration(opt =>
-                                        opt.CreateMap<MusicianMemberships, MusicianMembershipsDTO>()
-                                        .ForMember(dest => dest,
-                                        src => src.MapFrom(src => src.Musician))
-                                        .ForMember(dest => dest.Bands,
-                                        src => src.MapFrom(src => src.Memberships))
-                                        )
-                );
+                {
+                    opt.CreateMap<Band, BandDTO>();
+                    opt.CreateMap<Musician, MusicianDTO>();
+                    opt.CreateMap<MusicianMemberships, MusicianMembershipsDTO>()
+                                                .ForMember(dest => dest.Musician,
+                                                opt => opt.MapFrom(src => src.Musician))
+                                                .ForPath(dest => dest.Bands,
+                                                opt => opt.MapFrom(src => src.Memberships));
+                }));
         }
 
         public MusicianMembershipsDTO ToDto(MusicianMemberships entity)
@@ -32,7 +34,7 @@ namespace ApiNetCore.Application.DTOs.MappingConfig
 
             foreach (var element in list)
                 outList.Add(customMapper.Map<MusicianMembershipsDTO>(element));
-                
+
 
             return outList;
         }

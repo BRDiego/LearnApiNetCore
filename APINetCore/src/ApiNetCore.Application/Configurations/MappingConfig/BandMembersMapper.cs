@@ -2,7 +2,7 @@
 using ApiNetCore.Business.Models;
 using AutoMapper;
 
-namespace ApiNetCore.Application.DTOs.MappingConfig
+namespace ApiNetCore.Application.Configurations.MappingConfig
 {
     public class BandMembersMapper : IBandMembersMapper
     {
@@ -13,26 +13,14 @@ namespace ApiNetCore.Application.DTOs.MappingConfig
             customMapper = new Mapper(
                 new MapperConfiguration(opt =>
                 {
-                    opt.CreateMap<Band, BandDTO>(); // Map Band to BandDTO automatically
-                    opt.CreateMap<Musician, MusicianDTO>(); // Map Band to BandDTO automatically
+                    opt.CreateMap<Band, BandDTO>();
+                    opt.CreateMap<Musician, MusicianDTO>();
                     opt.CreateMap<BandMembers, BandMembersDTO>()
-                                                .ForMember(dest => dest,
+                                                .ForMember(dest => dest.Band,
                                                 opt => opt.MapFrom(src => src.Band))
-                                                .ForPath(dest => dest.Musicians,
+                                                .ForPath(dest => dest.Members,
                                                 opt => opt.MapFrom(src => src.Members));
                 }));
-
-            //customMapper = new Mapper(
-            //                    new MapperConfiguration(opt =>
-            //                    {
-            //                        //opt.CreateMap<Band, BandDTO>(); // Map Band to BandDTO automatically
-
-            //                        opt.CreateMap<BandMembers, BandMembersDTO>()
-            //                        .ForMember(dest => dest.Musicians,
-            //                                    opt => opt.MapFrom(src => src.Members))
-            //                        .IncludeBase<Band, BandDTO>(); // Include mapping from Band to BandDTO
-            //                        })
-            //                    );
         }
         public BandMembersDTO ToDto(BandMembers entity)
         {

@@ -1,6 +1,6 @@
 ﻿using ApiNetCore.Application.DTOs.Models;
 using ApiNetCore.Business.Models.Generic;
-namespace ApiNetCore.Application.DTOs.MappingConfig
+namespace ApiNetCore.Application.Configurations.MappingConfig
 {
     public interface IEntityMapper<TDto, TEntity> where TDto : EntityDTO where TEntity : Entity
     {

@@ -1,7 +1,8 @@
 ﻿namespace ApiNetCore.Application.DTOs.Models
 {
-    public class BandMembersDTO : BandDTO
+    public class BandMembersDTO
     {
-        public IEnumerable<MusicianDTO> Members = null!;
+        public BandDTO Band { get; set; } = null!;
+        public IEnumerable<MusicianDTO> Members { get; set; } = new List<MusicianDTO>();
     }
 }
